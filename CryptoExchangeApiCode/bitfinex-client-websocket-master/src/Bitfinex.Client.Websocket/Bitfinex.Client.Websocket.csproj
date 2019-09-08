@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Bitfinex.Client.Websocket</PackageId>
+    <Version>0.1.1</Version>
+    <Authors>Mariusz Kotas</Authors>
+    <Description>Client for Bitfinex websocket API version 2.0</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Cleanup after merge.</PackageReleaseNotes>
+    <Copyright>Copyright 2018 Mariusz Kotas. All rights reserved.</Copyright>
+    <PackageTags>Bitfinex websockets websocket client cryptocurrency exchange bitcoin</PackageTags>
+    <PackageLicenseUrl>https://github.com/Marfusios/bitfinex-client-websocket/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Marfusios/bitfinex-client-websocket</PackageProjectUrl>
+    <PackageIconUrl>http://blog.bitfinex.com/wp-content/uploads/2016/05/bfx-stacked.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Marfusios/bitfinex-client-websocket</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Serilog" Version="2.6.0" />
+    <PackageReference Include="System.Reactive" Version="4.0.0-preview00001" />
+  </ItemGroup>
+
+</Project>

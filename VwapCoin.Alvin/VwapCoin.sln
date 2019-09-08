@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VwapCoin", "VwapCoin\VwapCoin.csproj", "{0EA6D7C0-DD7D-4B9A-BB06-39EB932D78C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Command", "Command\Command.csproj", "{E7C3E5CA-188B-4DC4-8EDD-5B57C25C0CC9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoTools", "..\mylibs\CryptoTools\CryptoTools.csproj", "{0EAD1BB8-B858-4BBE-B905-D4524FB500F6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0EA6D7C0-DD7D-4B9A-BB06-39EB932D78C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EA6D7C0-DD7D-4B9A-BB06-39EB932D78C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EA6D7C0-DD7D-4B9A-BB06-39EB932D78C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EA6D7C0-DD7D-4B9A-BB06-39EB932D78C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7C3E5CA-188B-4DC4-8EDD-5B57C25C0CC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7C3E5CA-188B-4DC4-8EDD-5B57C25C0CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7C3E5CA-188B-4DC4-8EDD-5B57C25C0CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7C3E5CA-188B-4DC4-8EDD-5B57C25C0CC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EAD1BB8-B858-4BBE-B905-D4524FB500F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EAD1BB8-B858-4BBE-B905-D4524FB500F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EAD1BB8-B858-4BBE-B905-D4524FB500F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EAD1BB8-B858-4BBE-B905-D4524FB500F6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {59ECDE90-DE0C-4F8A-A293-D048A9973D41}
+	EndGlobalSection
+EndGlobal

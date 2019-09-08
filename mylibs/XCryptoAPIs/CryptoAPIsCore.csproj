@@ -1,0 +1,105 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RootNamespace>CryptoAPIs</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.4" />
+    <PackageReference Include="Pubnub" Version="4.0.14" />
+    <PackageReference Include="PusherClient.NetStandard" Version="0.5.0" />
+    <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
+    <PackageReference Include="Utf8Json" Version="1.3.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Binance.cs" />
+    <Compile Remove="Bitfinex.cs" />
+    <Compile Remove="Bithumb.cs" />
+    <Compile Remove="BitMEX.cs" />
+    <Compile Remove="Bitsquare.cs" />
+    <Compile Remove="Bitstamp.cs" />
+    <Compile Remove="Bittrex.cs" />
+    <Compile Remove="BitZ.cs" />
+    <Compile Remove="BlinkTrade.cs" />
+    <Compile Remove="Bluetrade.cs" />
+    <Compile Remove="BTCC.cs" />
+    <Compile Remove="BTER.cs" />
+    <Compile Remove="Cex.cs" />
+    <Compile Remove="Changelly.cs" />
+    <Compile Remove="CHBTC.cs" />
+    <Compile Remove="Class1.cs" />
+    <Compile Remove="Coinigy.cs" />
+    <Compile Remove="Coinone.cs" />
+    <Compile Remove="EtherDelta.cs" />
+    <Compile Remove="Exchange\B2C2.cs" />
+    <Compile Remove="Exchange\Bithumb.cs" />
+    <Compile Remove="Exchange\BitMEX.cs" />
+    <Compile Remove="Exchange\Bitsquare.cs" />
+    <Compile Remove="Exchange\BitZ.cs" />
+    <Compile Remove="Exchange\Bleutrade.cs" />
+    <Compile Remove="Exchange\BlinkTrade.cs" />
+    <Compile Remove="Exchange\BTCC.cs" />
+    <Compile Remove="Exchange\BTER.cs" />
+    <Compile Remove="Exchange\Cex.cs" />
+    <Compile Remove="Exchange\Changelly.cs" />
+    <Compile Remove="Exchange\CHBTC.cs" />
+    <Compile Remove="Exchange\Coinigy.cs" />
+    <Compile Remove="Exchange\Coinone.cs" />
+    <Compile Remove="Exchange\EtherDelta.cs" />
+    <Compile Remove="Exchange\GateIO.cs" />
+    <Compile Remove="Exchange\Huobi.cs" />
+    <Compile Remove="Exchange\Korbit.cs" />
+    <Compile Remove="Exchange\Kucoin.cs" />
+    <Compile Remove="Exchange\OkCoin.cs" />
+    <Compile Remove="Exchange\OKEx.cs" />
+    <Compile Remove="Exchange\Vaultoro.cs" />
+    <Compile Remove="Exchange\Wex.cs" />
+    <Compile Remove="Exchange\Xapo.cs" />
+    <Compile Remove="Exchange\XCrypto.cs" />
+    <Compile Remove="GateIO.cs" />
+    <Compile Remove="GDAX.cs" />
+    <Compile Remove="Gemini.cs" />
+    <Compile Remove="HitBTC.cs" />
+    <Compile Remove="Huobi.cs" />
+    <Compile Remove="ItBit.cs" />
+    <Compile Remove="Korbit.cs" />
+    <Compile Remove="Kraken.cs" />
+    <Compile Remove="Kucoin.cs" />
+    <Compile Remove="OkCoin.cs" />
+    <Compile Remove="OKEx.cs" />
+    <Compile Remove="Poloniex.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="Crypto %28DESKTOP-AJOND8O%27s conflicted copy 2017-11-16%29.cs" />
+    <Compile Remove="Trades\BittrexTradeMACD.cs" />
+    <Compile Remove="Vaultoro.cs" />
+    <Compile Remove="Wex.cs" />
+    <Compile Remove="XCrypto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tools\ToolsCore.csproj" />
+    <ProjectReference Include="..\Websockets\Websockets.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Exchange\Clients\" />
+    <Folder Include="Exchange\Clients\Binance\" />
+    <Folder Include="Exchange\Clients\Bittrex\" />
+    <Folder Include="Exchange\Clients\GDAX\" />
+    <Folder Include="Exchange\Clients\Kraken\" />
+    <Folder Include="Exchange\Clients\Bitstamp\" />
+    <Folder Include="Exchange\Clients\BitMEX\" />
+    <Folder Include="Exchange\Clients\ItBit\" />
+    <Folder Include="Exchange\Clients\Poloniex\" />
+    <Folder Include="Exchange\Clients\HitBTC\" />
+    <Folder Include="Exchange\Clients\BitFinex\" />
+    <Folder Include="Exchange\Clients\BitFlyer\" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,427 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HitBtcApi</name>
+    </assembly>
+    <members>
+        <member name="T:HitBtcApi.ApiResponse">
+            <summary>
+            Converting JSON to Models 
+            </summary>
+        </member>
+        <member name="T:HitBtcApi.Categories.MarketData">
+            <summary>
+            Market data RESTful API
+            </summary>
+        </member>
+        <member name="M:HitBtcApi.Categories.MarketData.GetTimestamp">
+            <summary>
+            returns the server time in UNIX timestamp format
+            /api/1/public/time
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.MarketData.GetSymbols">
+            <summary>
+            Simbols returns the actual list of currency symbols traded on HitBTC exchange with their characteristics
+            /api/1/public/symbols
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.MarketData.GetSymbolTicker(HitBtcApi.Model.Symbol)">
+            <summary>
+            returns the actual data on exchange rates of the specified cryptocurrency.
+            /api/1/public/:symbol/ticker
+            </summary>
+            <param name="symbol">is a currency symbol traded on HitBTC exchange</param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.MarketData.GetPublickTickers">
+            <summary>
+            returns the actual data on exchange rates for all traded cryptocurrencies - all tickers.
+            /api/1/public/ticker
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.MarketData.GetOrderbook(HitBtcApi.Model.Symbol)">
+            <summary>
+            returns a list of open orders for specified currency symbol: their prices and sizes.
+            /api/1/public/:symbol/orderbook
+            </summary>
+            <param name="symbol">is a currency symbol traded on HitBTC exchange </param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.MarketData.GetRecentTrades(HitBtcApi.Model.Symbol,System.Int32)">
+            <summary>
+            returns recent trades for the specified currency symbol.
+            /api/1/public/:symbol/trades/recent
+            </summary>
+            <param name="symbol">is a currency symbol traded on HitBTC exchange</param>
+            <param name="max_results">Maximum quantity of returned results, at most 1000</param>
+            <returns></returns>
+        </member>
+        <member name="T:HitBtcApi.Categories.Payment">
+            <summary>
+            Payment RESTful API
+            </summary>
+        </member>
+        <member name="M:HitBtcApi.Categories.Payment.GetMultiCurrencyBalance">
+            <summary>
+            returns multi-currency balance of the main account.
+            /api/1/payment/balance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Payment.GetTransactions(System.String)">
+            <summary>
+            returns payment transaction and its status.
+            /api/1/payment/transactions/:id
+            </summary>
+            <param name="id">Transaction Id, Required</param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Payment.GetTransactions(System.Int32,System.String,System.Int32)">
+            <summary>
+            returns a list of payment transactions and their statuses(array of transactions).
+            /api/1/payment/transactions
+            </summary>
+            <param name="offset">Start index for the query, default = 0</param>
+            <param name="limit">Maximum results for the query, Required</param>
+            <param name="dir">Transactions are sorted ascending (ask) or descending (desc) (default)</param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Payment.GetPyout(System.Decimal,System.String,System.String,System.String)">
+            <summary>
+            withdraws money and creates an outgoing crypotocurrency transaction; 
+            returns a transaction ID on the exchange or an error.
+            /api/1/payment/payout
+            </summary>
+            <param name="amount">Funds amount to withdraw, Required</param>
+            <param name="currency_code">Currency symbol, e.g.BTC, Required</param>
+            <param name="address">BTC/LTC address to withdraw to, Required</param>
+            <param name="id">payment id for cryptonote</param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Payment.GetAddress(System.String)">
+            <summary>
+            returns the last created incoming cryptocurrency address that can be used to deposit cryptocurrency to your account. 
+            /api/1/payment/address/ (GET)
+            </summary>
+            <param name="currency"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Payment.CreateAddress(System.String)">
+            <summary>
+            returns the last created incoming cryptocurrency address that can be used to deposit cryptocurrency to your account. 
+            /api/1/payment/address/ (GET)
+            </summary>
+            <param name="currency"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Payment.TransferToTrading(System.Decimal,System.String)">
+            <summary>
+            transfers funds between main and trading accounts; returns a transaction ID or an error.
+            /api/1/payment/transfer_to_trading
+            </summary>
+            <param name="amount">Funds amount to transfer, Required</param>
+            <param name="currency_code">Currency symbol, e.g. BTC, Required</param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Payment.TransferToMain(System.Decimal,System.String)">
+            <summary>
+            transfers funds between main and trading accounts; returns a transaction ID or an error.
+            /api/1/payment/transfer_to_main
+            </summary>
+            <param name="amount">Funds amount to transfer, Required</param>
+            <param name="currency_code">Currency symbol, e.g. BTC, Required</param>
+            <returns></returns>
+        </member>
+        <member name="T:HitBtcApi.Categories.Trading">
+            <summary>
+            Trading RESTful API
+            </summary>
+        </member>
+        <member name="M:HitBtcApi.Categories.Trading.GeTradingBalance">
+            <summary>
+            returns trading balance.
+            /api/1/trading/balance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Trading.GetActiveOrders(System.String,System.String)">
+            <summary>
+            returns all orders in status new or partiallyFilled.
+            /api/1/trading/orders/active
+            </summary>
+            <param name="symbols">Comma-separated list of symbols. Default - all symbols</param>
+            <param name="clientOrderId">Unique order ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:HitBtcApi.Categories.Trading.GetRecentOrders(System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            returns an array of user’s recent orders (order objects) for last 24 hours, sorted by order update time.
+            /api/1/trading/orders/recent
+            </summary>
+            <param name="start_index">Zero-based index, 0 by default</param>
+            <param name="max_results">Maximum quantity of returned items, at most 1000, Required</param>
+            <param name="sort">Orders are sorted ascending (default) or descending</param>
+            <param name="symbols">Comma-separated list of currency symbols</param>
+            <param name="statuses">Comma-separated list of order statuses: 
+            new, partiallyFilled, filled, canceled, expired,rejected</param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:HitBtcApi.Categories.Trading.GetTrades(System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String)" -->
+        <member name="P:HitBtcApi.Model.Address.address">
+            <summary>
+            BTC/LTC address to withdraw to
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Balance.currency_code">
+            <summary>
+            Currency symbol, e.g. BTC
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Balance.balance">
+            <summary>
+            Funds amount
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.orderId">
+            <summary>
+            Order ID on the exchange
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.orderStatus">
+            <summary>
+            Order status
+            new, partiallyFilled, filled, canceled, expired, rejected
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.lastTimestamp">
+            <summary>
+            UTC timestamp of the last change, in milliseconds
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.orderPrice">
+            <summary>
+            Order price
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.orderQuantity">
+            <summary>
+            Order quantity, in lots
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.avgPrice">
+            <summary>
+            Average price	
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.quantityLeaves">
+            <summary>
+            Remaining quantity, in lots
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.type">
+            <summary>
+            Type of an order
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.timeInForce">
+            <summary>
+            Time in force
+            GTC - Good-Til-Canceled, IOC - Immediate-Or-Cancel, OK - Fill-Or-Kill, DAY - day
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.cumQuantity">
+            <summary>
+            Cumulative quantity
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.clientOrderId">
+            <summary>
+            Unique client-generated ID
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.symbo">
+            <summary>
+            Currency symbol
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.side">
+            <summary>
+            Side of a trade
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Order.execQuantity">
+            <summary>
+            Last executed quantity, in lots
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.last">
+            <summary>
+            Last price
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.bid">
+            <summary>
+            Highest buy order
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.ask">
+            <summary>
+            Lowest sell order
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.high">
+            <summary>
+            Highest trade price per last 24h + last incomplete minute
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.low">
+            <summary>
+            Lowest trade price per last 24h + last incomplete minute
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.volume">
+            <summary>
+            Volume per last 24h + last incomplete minute
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.open">
+            <summary>
+            Price in which instrument open
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.volume_quote">
+            <summary>
+            Volume in second currency per last 24h + last incomplete minute
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Ticker.timestamp">
+            <summary>
+            Server time in UNIX timestamp format
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Timestamp.timestamp">
+            <summary>
+            time in UNIX timestamp format
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.tradeId">
+            <summary>
+            Trade ID on the exchange
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.execPrice">
+            <summary>
+            Trade price
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.timestamp">
+            <summary>
+            Timestamp, in milliseconds
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.originalOrderId">
+            <summary>
+            Order ID on the exchange
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.fee">
+            <summary>
+            Fee for the trade, negative value means rebate
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.clientOrderId">
+            <summary>
+            Unique order ID generated by client. From 8 to 32 characters
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.symbol">
+            <summary>
+            Currency symbol
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.side">
+            <summary>
+            Side of a trade
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Trade.execQuantity">
+            <summary>
+            Trade size, in lots
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.TradingBalance.currency_code">
+            <summary>
+            Currency symbol, e.g. BTC
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.TradingBalance.cash">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.TradingBalance.reserved">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Symbol.symbol">
+            <summary>
+            Symbol name
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Symbol.step">
+             <summary>
+            Price step parameter
+             </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Symbol.lot">
+            <summary>
+            Lot size parameter
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Symbol.currency">
+            <summary>
+            Value of this symbol
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Symbol.commodity">
+            <summary>
+            Second value of this symbol
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Symbol.takeLiquidityRate">
+            <summary>
+            Liquidity taker fee
+            </summary>
+        </member>
+        <member name="P:HitBtcApi.Model.Symbol.provideLiquidityRate">
+            <summary>
+            Liquidity provider rebate
+            </summary>
+        </member>
+        <member name="M:HitBtcApi.HitBtcApi.Execute(RestSharp.RestRequest,System.Boolean)">
+            <summary>
+            Method that allow to execute a request to api
+            </summary>
+            <param name="request"></param>
+            <param name="requireAuthentication"></param>
+            <returns></returns>
+        </member>
+        <member name="P:HitBtcApi.HitBtcApi.IsAuthorized">
+            <summary>
+            Flag shows that user is authorized
+            </summary>
+        </member>
+        <member name="M:HitBtcApi.HitBtcApi.Authorize(System.String,System.String)">
+            <summary>
+            Method for authorization 
+            </summary>
+            <param name="apiKey">API key from the Settings page.</param>
+            <param name="secretKey">Secret key from the Settings page.</param>
+        </member>
+    </members>
+</doc>

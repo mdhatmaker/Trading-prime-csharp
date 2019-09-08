@@ -1,0 +1,1 @@
+D:\vs2013cpp\Huobi_Rest_ExeTest\Huobi_Rest_ExeTest\ConsoleApplication.exe market.btcusdt.kline.1min id1 market.bchbtc.kline.1min id2

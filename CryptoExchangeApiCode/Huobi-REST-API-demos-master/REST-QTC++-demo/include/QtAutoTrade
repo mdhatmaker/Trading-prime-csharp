@@ -1,0 +1,14 @@
+#ifndef QTPROMISE_MODULE_H
+#define QTPROMISE_MODULE_H
+
+#include "../src/qtautotrade/core/abstractmarketapi.h"
+#include "../src/qtautotrade/core/appmarketaccount.h"
+#include "../src/qtautotrade/core/asset.h"
+#include "../src/qtautotrade/core/baseentity.h"
+
+#include "../src/qtautotrade/utils/httputils.h"
+
+#include "../src/qtautotrade/market/huobi/huobiinnovationcnyapi.h"
+
+
+#endif // ifndef QTPROMISE_MODULE_H

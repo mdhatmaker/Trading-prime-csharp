@@ -1,0 +1,9 @@
+language: csharp
+solution: MetacoItBit.sln
+
+install:
+  - nuget restore MetacoItBit.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release MetacoItBit.sln
+

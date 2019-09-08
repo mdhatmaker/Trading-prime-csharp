@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pyQFeed", "pyQFeed\pyQFeed.csproj", "{4AB7CFB6-FE56-46F4-8FAB-3F47F3DE8FC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQFeedCore", "..\PrimeTrader\IQFeed\IQFeedCore.csproj", "{9362BDDB-68E2-44D1-B215-CB1DB16F105B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolsCore", "..\mylibs\Tools\ToolsCore.csproj", "{A0F2D1AD-02A7-4E7C-A05C-F4D215227C87}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4AB7CFB6-FE56-46F4-8FAB-3F47F3DE8FC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AB7CFB6-FE56-46F4-8FAB-3F47F3DE8FC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AB7CFB6-FE56-46F4-8FAB-3F47F3DE8FC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AB7CFB6-FE56-46F4-8FAB-3F47F3DE8FC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9362BDDB-68E2-44D1-B215-CB1DB16F105B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9362BDDB-68E2-44D1-B215-CB1DB16F105B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9362BDDB-68E2-44D1-B215-CB1DB16F105B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9362BDDB-68E2-44D1-B215-CB1DB16F105B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0F2D1AD-02A7-4E7C-A05C-F4D215227C87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0F2D1AD-02A7-4E7C-A05C-F4D215227C87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0F2D1AD-02A7-4E7C-A05C-F4D215227C87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0F2D1AD-02A7-4E7C-A05C-F4D215227C87}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

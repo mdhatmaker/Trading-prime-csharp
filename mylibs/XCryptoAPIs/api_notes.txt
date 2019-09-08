@@ -1,0 +1,19 @@
+﻿
+
+	1. BlinkTrade (https://blinktrade.com/docs/)
+	2. TradeBlock (https://api.tradeblock.com/markets/websocket/v1/)
+	3. Quoine (https://developers.quoine.com/#introduction)
+	4. Coinone (http://doc.coinone.co.kr/)
+	5. BTC-e/WEX (https://wex.nz/api/3/docs)
+
+	6. Vaultoro (https://api.vaultoro.com/)
+	apiKey = "deoXDJsaXYsWrrxhJupPqmphbY2CRqMT"
+	apiSecret = "ckRIWUtlVWh2ajk0Vm9zT0tVcHpyMHJ2dzlIaDJFbnY="
+
+	7. Liqui (https://liqui.io/api)
+	8. Gate.io (https://gate.io/api2)
+	9. TheRockTrading (https://api.therocktrading.com/doc/)
+
+
+
+

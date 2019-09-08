@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Title>Bithumb RESTFul API</Title>
+    <Description>C# Bithumb RESTFul API</Description>
+    <Copyright>Copyright OdinSoftware Co., Ltd. 2017</Copyright>
+    <AssemblyTitle>Bithumb.API.Core</AssemblyTitle>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <Authors>SEONGAHN LEE</Authors>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>Bithumb.API</AssemblyName>
+    <PackageId>Bithumb.API.Core</PackageId>
+    <PackageTags>odinsoft;sdk;api;bitcoin;btc;ethereum;eth</PackageTags>
+    <PackageIconUrl>https://github.com/lisa3907/bithumb.csharp/blob/master/logo-files/bithumb.api.ico?raw=true</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/lisa3907/bithumb.csharp</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/lisa3907/bithumb.csharp/blob/master/LICENSE</PackageLicenseUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>Bithumb.API</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.0.3</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="OdinSdk.BaseLib.Core" Version="1.0.8" />
+    <PackageReference Include="RestSharp.NetCore" Version="105.2.3" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
+    <PackageReference Include="System.Net.NetworkInformation" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

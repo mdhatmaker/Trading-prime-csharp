@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26621.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bithumb.sample.c11", "src\bithumb.sample.c11\bithumb.sample.c11.csproj", "{F90E350F-7774-4987-B095-7C2731F0C2C7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EE36102D-AC13-4DED-802B-F265CB1DEE53}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bithumb.api.s16", "src\bithumb.api.s16\bithumb.api.s16.csproj", "{C847116C-4349-4279-8B2D-55E54A8D69DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EFFFF510-E675-4A31-B7AD-2EA3A7E60DAA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logo-files", "logo-files", "{5A50B081-F4DF-42AD-9C52-3FDADE6D2919}"
+	ProjectSection(SolutionItems) = preProject
+		logo-files\bithumb.api.ico = logo-files\bithumb.api.ico
+		logo-files\bithumb.api.png = logo-files\bithumb.api.png
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F90E350F-7774-4987-B095-7C2731F0C2C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F90E350F-7774-4987-B095-7C2731F0C2C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F90E350F-7774-4987-B095-7C2731F0C2C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F90E350F-7774-4987-B095-7C2731F0C2C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C847116C-4349-4279-8B2D-55E54A8D69DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C847116C-4349-4279-8B2D-55E54A8D69DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C847116C-4349-4279-8B2D-55E54A8D69DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C847116C-4349-4279-8B2D-55E54A8D69DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F90E350F-7774-4987-B095-7C2731F0C2C7} = {EFFFF510-E675-4A31-B7AD-2EA3A7E60DAA}
+		{C847116C-4349-4279-8B2D-55E54A8D69DF} = {EFFFF510-E675-4A31-B7AD-2EA3A7E60DAA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A6D6A092-2C51-496E-A9D6-14BE47DE5337}
+	EndGlobalSection
+EndGlobal

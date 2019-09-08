@@ -1,0 +1,41 @@
+	body {
+		font-size: 9px;
+		color: white;
+	}
+
+	#source {
+		margin: 0;
+	}
+
+	a {
+		color: white;
+	}
+
+	a:hover {
+		color: red;
+	}
+
+	.btn {
+		margin: 5% 0 0 0;
+	}
+
+	.subon {
+		border-color: blue;
+	}
+
+	.panel {
+		background-color: rgb(30, 30, 30);
+		margin-top: 3%;
+	}
+
+	.BUY {
+		color: green;
+	}
+
+	.SELL {
+		color: red;
+	}
+	
+	#sub-exchanges {
+		color:gray;
+	}

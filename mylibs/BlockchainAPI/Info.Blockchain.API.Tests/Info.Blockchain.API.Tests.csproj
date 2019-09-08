@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="JsonObjects\single_transaction.json">
+      <LogicalName>Info.Blockchain.API.Tests.JsonObjects.single_transaction.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JsonObjects\single_block.json">
+      <LogicalName>Info.Blockchain.API.Tests.JsonObjects.single_block.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JsonObjects\blocks_height_100000.json">
+      <LogicalName>Info.Blockchain.API.Tests.JsonObjects.blocks_height_100000.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JsonObjects\blocks_timestamp_1293623863000.json">
+      <LogicalName>Info.Blockchain.API.Tests.JsonObjects.blocks_timestamp_1293623863000.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JsonObjects\create_wallet_mock.json">
+      <LogicalName>Info.Blockchain.API.Tests.JsonObjects.create_wallet_mock.json</LogicalName>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

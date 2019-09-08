@@ -1,0 +1,46 @@
+	body {
+		background-color: black;
+		font-size: 17px;
+		color: white;
+	}
+
+	.panel {
+		background-color: rgb(50, 50, 50);
+	}
+
+	.panel-body {
+		padding-left: 10%;
+	}
+
+	.price-boxes {
+		margin-top: 10%;
+	}
+	
+	a {
+		color:white;
+	}
+
+	.price {
+		font-size: 25px;
+	}
+
+	.price-display {
+		font-weight: bold;
+		text-align: center;
+	}
+
+	span {
+		color: orange;
+	}
+
+	.up {
+		color: green;
+	}
+
+	.down {
+		color: red;
+	}
+
+	.exchange {
+		color: #42f492;
+	}

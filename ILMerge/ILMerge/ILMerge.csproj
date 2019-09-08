@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>2.15.0</Version>
+    <Description>A tool for merging multiple .NET assemblies into a single assembly.</Description>
+    <Company>Microsoft Corporation</Company>
+    <Copyright>(c) Microsoft Corporation. All rights reserved.</Copyright>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Common\InterimKey.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net452</TargetFramework>
+    <DefineConstants>$(DefineConstants);INTERNAL;CROSSPLATFORM;V2</DefineConstants>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>6</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+
+  <!-- NuGet package settings -->
+  <PropertyGroup>
+    <NuspecFile>$(MSBuildProjectName).nuspec</NuspecFile>
+    <NuspecProperties>configuration=$(Configuration);version=$(Version)</NuspecProperties>
+    <!-- ignore warnings about the long description field. See https://github.com/NuGet/Home/issues/4587 -->
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\System.Compiler\System.Compiler.csproj" />
+  </ItemGroup>
+
+  <Target Name="ILMergeConsoleApp" AfterTargets="Build">
+
+    <Error Text="ILMerge currently only works on Windows" Condition="'$(OS)' != 'Windows_NT'" />
+
+    <Message Text="Running IL merging on System.Compiler and ILMerge.exe" Importance="High" />
+    <MakeDir Directories="$(OutDir)\final" />
+
+    <PropertyGroup>
+      <ILMergeCommand>ILMerge.exe /ndebug "/log:$(MSBuildProjectDirectory)/$(IntermediateOutputPath)ilmerge.log" "/keyfile:$(AssemblyOriginatorKeyFile)" /t:exe /out:final/ILMerge.exe ILMerge.exe System.Compiler.dll</ILMergeCommand>
+    </PropertyGroup>
+
+    <Exec Command="$(ILMergeCommand)" WorkingDirectory="$(OutDir)" />
+  </Target>
+
+</Project>

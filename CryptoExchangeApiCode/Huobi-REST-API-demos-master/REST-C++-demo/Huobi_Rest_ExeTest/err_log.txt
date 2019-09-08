@@ -1,0 +1,10 @@
+2018-01-05T13%3A29%3A10	huobiAPI::Post_transfer_inout(symbol:hsrusdt,currency:hsr,amount:1)	71
+{"status":"error","err-code":"api-signature-not-valid","err-msg":"Signature not valid: 校验失败","data":null}
+0
+
+
+2018-01-05T13%3A30%3A21	huobiAPI::Post_transfer_inout(symbol:hsrusdt,currency:hsr,amount:1)	71
+{"status":"error","err-code":"api-signature-not-valid","err-msg":"Signature not valid: 校验失败","data":null}
+0
+
+

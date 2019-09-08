@@ -1,0 +1,2 @@
+ROOT_DATA_FOLDER=Z:\Dropbox
+SECURITY_FILENAME=X:\Users\Trader\Documents\hat_apis.json

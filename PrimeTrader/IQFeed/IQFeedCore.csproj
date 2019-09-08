@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="IQFeedSettingsForm.Designer.cs" />
+    <Compile Remove="IQFeedSettingsForm.cs" />
+    <Compile Remove="HistorySocketForm - Copy.Designer.cs" />
+    <Compile Remove="HistorySocketForm - Copy.cs" />
+    <Compile Remove="StreamingBarsForm.Designer.cs" />
+    <Compile Remove="StreamingBarsForm.cs" />
+    <Compile Remove="SymbolSearchForm.Designer.cs" />
+    <Compile Remove="SymbolSearchForm.cs" />
+    <Compile Remove="HistoricalDataForm.Designer.cs" />
+    <Compile Remove="HistoricalDataForm.cs" />
+    <Compile Remove="PricesForm.Designer.cs" />
+    <Compile Remove="PricesForm.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="IQFeedSettingsForm.resx" />
+    <EmbeddedResource Remove="HistorySocketForm - Copy.resx" />
+    <EmbeddedResource Remove="StreamingBarsForm.resx" />
+    <EmbeddedResource Remove="SymbolSearchForm.resx" />
+    <EmbeddedResource Remove="HistoricalDataForm.resx" />
+    <EmbeddedResource Remove="PricesForm.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\mylibs\Tools\ToolsCore.csproj" />
+  </ItemGroup>
+</Project>

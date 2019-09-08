@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{42678C2B-5CC1-4AEE-B7B3-A2E400D8E9CA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IQFeed.GUI</RootNamespace>
+    <AssemblyName>IQFeed.GUI</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HistoricalDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HistoricalDataForm.Designer.cs">
+      <DependentUpon>HistoricalDataForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IQFeedSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IQFeedSettingsForm.Designer.cs">
+      <DependentUpon>IQFeedSettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PricesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PricesForm.Designer.cs">
+      <DependentUpon>PricesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamingBarsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StreamingBarsForm.Designer.cs">
+      <DependentUpon>StreamingBarsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolSearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SymbolSearchForm.Designer.cs">
+      <DependentUpon>SymbolSearchForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HistoricalDataForm.resx">
+      <DependentUpon>HistoricalDataForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IQFeedSettingsForm.resx">
+      <DependentUpon>IQFeedSettingsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PricesForm.resx">
+      <DependentUpon>PricesForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StreamingBarsForm.resx">
+      <DependentUpon>StreamingBarsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SymbolSearchForm.resx">
+      <DependentUpon>SymbolSearchForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\mylibs\CryptoAPIs\CryptoAPIs.csproj">
+      <Project>{230ccd31-c6ad-4d65-9e59-e1f2b1fb84e9}</Project>
+      <Name>CryptoAPIs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\mylibs\GuiTools\GuiTools.csproj">
+      <Project>{a566a42c-bc22-4b03-9023-a8d1bcabc36d}</Project>
+      <Name>GuiTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\mylibs\Tools\Tools.csproj">
+      <Project>{25849f0d-b78f-48b7-b6f0-d83a75e31553}</Project>
+      <Name>Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IQFeed\IQFeed.csproj">
+      <Project>{252720d6-1452-493d-9d72-b033dcea59c6}</Project>
+      <Name>IQFeed</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

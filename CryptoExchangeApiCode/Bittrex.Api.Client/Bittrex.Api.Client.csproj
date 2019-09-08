@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Jonathan Lowe</Authors>
+    <Company />
+    <Version>1.1.0</Version>
+    <PackageProjectUrl>https://github.com/Coinio/Bittrex.Api.Client</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Coinio/Bittrex.Api.Client</RepositoryUrl>
+    <PackageTags>C# .net core cryptocurrency bitcoin</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>A simple C# wrapper for the Bittrex cryptocurrency trading platform.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+</Project>

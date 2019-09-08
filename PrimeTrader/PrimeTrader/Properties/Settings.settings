@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PrimeTrader.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="WindowLocationPrimeTraderForm" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Normal, 0, 0, 600, 600</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\mylibs\Tools\ToolsCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="PricesForm.Designer %28copy%29.cs" />
+    <Compile Remove="PricesForm.Designer.cs" />
+    <Compile Remove="PricesForm.cs" />
+    <Compile Remove="PricesForm.Designer %28copy%29.cs" />
+    <Compile Remove="Properties\Resources.Designer.cs" />
+    <Compile Remove="Properties\Settings.Designer.cs" />
+    <Compile Remove="PricesForm.Designer %28copy%29.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="PricesForm.Designer %28copy%29.cs" />
+    <Compile Remove="PricesForm.Designer %28copy%29.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="PricesForm %28copy%29.resx" />
+    <EmbeddedResource Remove="PricesForm.resx" />
+    <EmbeddedResource Remove="PricesForm %28copy%29.resx" />
+    <EmbeddedResource Remove="Properties\Resources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Properties\Settings.settings" />
+    <None Remove="App.config" />
+  </ItemGroup>
+</Project>

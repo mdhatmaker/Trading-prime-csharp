@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8C90C113-2425-464E-8AF6-65BE8117E01A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BuildProject</RootNamespace>
+    <AssemblyName>BuildProject</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>none</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\ConsoleBenchmarkTool\ConsoleBenchmarkTool_Internal.csproj">
+      <Project>{264B150B-FBF8-49D1-94D1-EB552AA91478}</Project>
+      <Name>ConsoleBenchmarkTool_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeneralCOM\GeneralCOM_Internal.csproj">
+      <Project>{1D743CC4-34EC-49A3-8525-49BDBF641B98}</Project>
+      <Name>GeneralCOM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HistoryCOM\HistoryCOM_Internal.csproj">
+      <Project>{D6AE03FF-852F-4DED-8220-6EF7C09DA68C}</Project>
+      <Name>HistoryCOM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HistorySocket\HistorySocket_Internal.csproj">
+      <Project>{43AF5877-BCAF-4D04-96B7-A7CFCFDA59D2}</Project>
+      <Name>HistorySocket_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LaunchingTheFeed\LaunchingTheFeed_Internal.csproj">
+      <Project>{A0FA58F2-748A-40C7-9D3D-D1F0F46E5CBC}</Project>
+      <Name>LaunchingTheFeed_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Level1ActiveX\Level1ActiveX_Internal.csproj">
+      <Project>{8C9D62BA-6B64-4F7D-B351-0C28780D625C}</Project>
+      <Name>Level1ActiveX_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Level1COM\Level1COM_Internal.csproj">
+      <Project>{24D9C0B9-43BA-4AB2-B7BB-AFBA1564711B}</Project>
+      <Name>Level1COM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Level1Socket\Level1Socket_Internal.csproj">
+      <Project>{252720D6-1452-493D-9D72-B033DCEA59C6}</Project>
+      <Name>Level1Socket_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MarketDepthCOM\MarketDepthCOM_Internal.csproj">
+      <Project>{95865187-0600-49D7-B342-EEE2AD8B9DCE}</Project>
+      <Name>MarketDepthCOM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MarketDepthSocket\MarketDepthSocket_Internal.csproj">
+      <Project>{AD160A19-1727-44C1-88C9-F736F789C170}</Project>
+      <Name>MarketDepthSocket_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NewsCOM\NewsCOM_Internal.csproj">
+      <Project>{799E0113-3223-4C52-8A7C-A083AE1EE114}</Project>
+      <Name>NewsCOM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NewsSocket\NewsSocket_Internal.csproj">
+      <Project>{45D67075-0785-44A6-B00B-33E1315FB2D4}</Project>
+      <Name>NewsSocket_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OptionChainCOM\OptionChainCOM_Internal.csproj">
+      <Project>{4E56B7BC-7DD6-4772-A357-21338AAE38B9}</Project>
+      <Name>OptionChainCOM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OptionChainSocket\OptionChainSocket_Internal.csproj">
+      <Project>{2CD1438B-E510-45A6-82BF-D17F2D1EFF41}</Project>
+      <Name>OptionChainSocket_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StreamingBarsCOM\StreamingBarsCOM_Internal.csproj">
+      <Project>{3F5185FB-CF80-4DEF-9D28-0E19E25185DC}</Project>
+      <Name>StreamingBarsCOM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StreamingBarsSocket\StreamingBarsSocket_Internal.csproj">
+      <Project>{AB8D8E6E-BA95-4009-AD43-4C0F9F935C71}</Project>
+      <Name>StreamingBarsSocket_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SymbolLookupCOM\SymbolLookupCOM_Internal.csproj">
+      <Project>{AED36E7F-CB55-4071-A656-C862AFFA24AA}</Project>
+      <Name>SymbolLookupCOM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SymbolLookupSocket\SymbolLookupSocket_Internal.csproj">
+      <Project>{D879AE07-555A-421E-9373-D1A3B95C9839}</Project>
+      <Name>SymbolLookupSocket_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SystemInfoCOM\SystemInfoCOM_Internal.csproj">
+      <Project>{27DF48F2-D598-4D1E-A8C4-AF29D913C11F}</Project>
+      <Name>SystemInfoCOM_Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SystemInfoSocket\SystemInfoSocket_Internal.csproj">
+      <Project>{7CCC27FA-4A9A-42E6-8912-5D7DAE6CF2D2}</Project>
+      <Name>SystemInfoSocket_Internal</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+</Project>

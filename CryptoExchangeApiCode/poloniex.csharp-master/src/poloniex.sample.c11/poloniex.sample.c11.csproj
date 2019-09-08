@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>Poloniex.Sample</AssemblyName>
+    <RootNamespace>Poloniex.Sample</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\poloniex.api.s16\poloniex.api.s16.csproj" />
+  </ItemGroup>
+
+</Project>
