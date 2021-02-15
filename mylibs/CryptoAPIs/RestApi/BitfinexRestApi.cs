@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CryptoApis.Models;
 using Bitfinex.Net;
+using Bitfinex.Net.Objects;
 using CryptoTools.Net;
 using static CryptoTools.Global;
 
@@ -76,26 +77,32 @@ namespace CryptoApis.RestApi
 
         public string GetSymbol(string symbolId)
         {
-            if (symbolId == "btcusd") return "BTCUSD";
+            return symbolId;
+            /*if (symbolId == "btcusd") return "BTCUSD";
             else if (symbolId == "ethusd") return "ETHUSD";
             else if (symbolId == "ethbtc") return "ETHBTC";
             else
             {
                 Console.WriteLine("ERROR: Symbol ID not found.");
                 return null;
-            }
+            }*/
         }
 
         public async Task<XTicker> GetTicker(string symbolId)
         {
             string symbol = GetSymbol(symbolId);
-            var res = await m_client.GetTickerAsync(new string[] { symbol });
-            return new XTicker(res.Data[0]);
+            CancellationToken ct = default;
+            var res = await m_client.GetTickerAsync(ct, new string[] { symbol });
+            var data = res.Data;
+            var res2 = await m_client.GetSymbolsAsync(ct);
+            var data2 = res2.Data;
+            var first = data.First();
+            return new XTicker(first);
         }
 
         public async Task<XBalanceMap> GetBalances()
         {
-            var res = await m_client.GetWalletsAsync();
+            var res = await m_client.GetBalancesAsync();    //GetWalletsAsync();
             return new XBalanceMap(res.Data);
         }
         #endregion ----------------------------------------------------------------------------------

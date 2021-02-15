@@ -29,10 +29,11 @@ namespace CryptoConsole
         {
             Console.WriteLine("\n*** WECOME TO CRYPTO CONSOLE ***\n");
 
-            //args = new string[] { "balances", "BINANCE", "btcusdt" };
+            //args = new string[] { "balance", "BINANCE", "btcusdt" };
+            args = new string[] { "balance", "ALL", "*" };
 
             m_factory = new ApiFactory(Credentials.CredentialsFile, Credentials.CredentialsPassword);
-
+            
             if (args.Length == 0)
             {
                 Console.WriteLine("usage: dotnet CryptoConsole.dll gator <symbol> <amount> <bips> (#display)");
@@ -253,14 +254,14 @@ namespace CryptoConsole
         // Display account balances for each exchange
         static void DisplayAllExchangeBalances()
         {
-            DisplayBalances("KRAKEN", "btcusd");
+            //DisplayBalances("KRAKEN", "btcusd");
             DisplayBalances("BITFINEX", "btcusd");
             DisplayBalances("BINANCE", "btcusdt");
             DisplayBalances("BITTREX", "btcusdt");
-            DisplayBalances("POLONIEX", "btcusdt");
-            DisplayBalances("GDAX", "btcusd");
+            //DisplayBalances("POLONIEX", "btcusdt");
+            //DisplayBalances("GDAX", "btcusd");
 
-            try
+            /*try
             {
                 GdaxRestApi api = m_factory.Get("GDAX") as GdaxRestApi;
                 api.PrintCoinbaseAccounts().Wait();
@@ -268,7 +269,7 @@ namespace CryptoConsole
             catch (Exception ex)
             {
                 Console.WriteLine("\nGDAX Coinbase Error: {0}", ex.Message);
-            }
+            }*/
         }
 
         // Display all balances for the specified exchange
@@ -367,25 +368,25 @@ namespace CryptoConsole
                         symbols[sym.Name] = new XSymbol("BINANCE", sym.Name);
 
                     var xs = symbols[sym.Name];
-                    if (f is Binance.Net.Objects.BinanceSymbolLotSizeFilter)
+                    if (f is Binance.Net.Objects.Spot.MarketData.BinanceSymbolLotSizeFilter)
                     {
-                        var lotSizeFilter = f as Binance.Net.Objects.BinanceSymbolLotSizeFilter;
+                        var lotSizeFilter = f as Binance.Net.Objects.Spot.MarketData.BinanceSymbolLotSizeFilter;
                         //Console.WriteLine("LOT FILTER: {0} {1} {2} {3}", sym.Name, lotSizeFilter.MinQuantity, lotSizeFilter.MaxQuantity, lotSizeFilter.StepSize);
                         xs.MinQuantity = lotSizeFilter.MinQuantity;
                         xs.MaxQuantity = lotSizeFilter.MaxQuantity;
                         xs.StepSize = lotSizeFilter.StepSize;
                     }
-                    else if (f is Binance.Net.Objects.BinanceSymbolPriceFilter)
+                    else if (f is Binance.Net.Objects.Spot.MarketData.BinanceSymbolPriceFilter)
                     {
-                        var priceFilter = f as Binance.Net.Objects.BinanceSymbolPriceFilter;
+                        var priceFilter = f as Binance.Net.Objects.Spot.MarketData.BinanceSymbolPriceFilter;
                         //Console.WriteLine("PRICE FILTER: {0} {1} {2} {3}", sym.Name, priceFilter.MinPrice, priceFilter.MaxPrice, priceFilter.TickSize);
                         xs.MinPrice = priceFilter.MinPrice;
                         xs.MaxPrice = priceFilter.MaxPrice;
                         xs.TickSize = priceFilter.TickSize;
                     }
-                    else if (f is Binance.Net.Objects.BinanceSymbolMinNotionalFilter)
+                    else if (f is Binance.Net.Objects.Spot.MarketData.BinanceSymbolMinNotionalFilter)
                     {
-                        var notionalFilter = f as Binance.Net.Objects.BinanceSymbolMinNotionalFilter;
+                        var notionalFilter = f as Binance.Net.Objects.Spot.MarketData.BinanceSymbolMinNotionalFilter;
                         //Console.WriteLine("NOTIONAL FILTER: {0} {1}", sym.Name, notionalFilter.MinNotional);
                         xs.MinNotional = notionalFilter.MinNotional;
                     }

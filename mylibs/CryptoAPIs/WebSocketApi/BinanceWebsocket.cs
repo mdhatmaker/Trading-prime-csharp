@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
@@ -10,6 +11,11 @@ using Binance.Net.Objects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CryptoTools.Models;
+using Binance.Net.Objects.Spot.MarketStream;
+using Binance.Net.Objects.Spot.UserStream;
+using Binance.Net.Objects.Spot.SpotData;
+using Binance.Net.Objects.Spot;
+using Binance.Net.Enums;
 
 namespace CryptoApis.WebsocketApi
 {
@@ -37,7 +43,7 @@ namespace CryptoApis.WebsocketApi
 
         private ConcurrentDictionary<string, BinanceStreamTick> m_tick;
         private ConcurrentDictionary<string, BinanceStreamOrderUpdate> m_order;
-        //private ConcurrentDictionary<string, BinanceStreamBalance> m_balance;
+        private ConcurrentDictionary<string, XBalance> m_balance;   //BinanceStreamBalance> m_balance;
         private BinanceStreamAccountInfo m_account;
 
         private static BinanceWebsocket m_instance;
@@ -71,7 +77,7 @@ namespace CryptoApis.WebsocketApi
             m_socketClient = new BinanceSocketClient(soptions);
 
             m_tick = new ConcurrentDictionary<string, BinanceStreamTick>();
-            m_balance = new ConcurrentDictionary<string, BinanceStreamBalance>();
+            m_balance = new ConcurrentDictionary<string, XBalance>();   //BinanceStreamBalance>();
             m_order = new ConcurrentDictionary<string, BinanceStreamOrderUpdate>();
 
             InitializeBinanceTickers();
@@ -86,24 +92,24 @@ namespace CryptoApis.WebsocketApi
         private void HandleTimerCallback(object state)
         {
             //Console.WriteLine("HandleTimerCallback FIRED!!!");
-            m_client.KeepAliveUserStreamAsync(m_listenKey);
+            m_client.Spot.UserStream.KeepAliveUserStreamAsync(m_listenKey);
         }
 
         private async Task<string> StartUserStream()
         {
-            var res = await m_client.StartUserStreamAsync();
-            return res.Data.ListenKey;
+            var res = await m_client.Spot.UserStream.StartUserStreamAsync();
+            return res.Data;    //.Data.ListenKey;
         }
 
         public async Task StopUserStream()
         {
-            await m_client.StopUserStreamAsync(m_listenKey);
+            await m_client.Spot.UserStream.StopUserStreamAsync(m_listenKey);
             return;
         }
 
         private void InitializeBinanceTickers()
         {
-            var res = m_client.GetAllBookPrices();
+            var res = m_client.Spot.Market.GetAllBookPrices();
             Console.Write("--- Initializing BINANCE BookPrice ");
             int count = 0;
             foreach (var bp in res.Data)
@@ -112,7 +118,7 @@ namespace CryptoApis.WebsocketApi
                 if (count++ % 10 == 0) Console.Write(".");
                 // put BookPrice data into m_binaTick
             }
-            Console.WriteLine(" ({0})", res.Data.Length);
+            Console.WriteLine(" ({0})", res.Data.Count());
         }
 
         private BinanceStreamAccountInfo Convert(BinanceAccountInfo ai)
@@ -140,7 +146,7 @@ namespace CryptoApis.WebsocketApi
             return bsb;
         }
 
-        private List<BinanceStreamBalance> Convert(List<BinanceBalance> list)
+        private List<BinanceStreamBalance> Convert(IEnumerable<BinanceBalance> list)
         {
             var result = new List<BinanceStreamBalance>();
             foreach (var bb in list)
@@ -152,7 +158,7 @@ namespace CryptoApis.WebsocketApi
 
         private void InitializeBinanceAccountInfo()
         {
-            var res = m_client.GetAccountInfo();
+            var res = m_client.General.GetAccountInfo();
             Console.Write("--- Initializing BINANCE AccountInfo ");
             int count = 0;
             if (res.Success)
@@ -174,9 +180,28 @@ namespace CryptoApis.WebsocketApi
             }
         }
 
+        private BinanceStreamOrderUpdate OrderToOrderUpdate(BinanceOrder o)
+        {
+            var oup = new BinanceStreamOrderUpdate();
+            oup.ClientOrderId = o.ClientOrderId;
+            oup.IcebergQuantity = o.IcebergQuantity;
+            oup.IsWorking = o.IsWorking;
+            oup.OrderId = o.OrderId;
+            oup.Price = o.Price;
+            oup.Quantity = o.Quantity;          //o.OriginalQuantity
+            oup.Side = o.Side;
+            oup.Status = o.Status;
+            oup.StopPrice = o.StopPrice;
+            oup.Symbol = o.Symbol;
+            oup.CreateTime = o.CreateTime;
+            oup.TimeInForce = o.TimeInForce;
+            oup.Type = o.Type;
+            return oup;
+        }
+
         private void InitializeBinanceOrderInfo()
         {
-            var res = m_client.GetOpenOrders();
+            var res = m_client.Spot.Order.GetOpenOrders();
             Console.Write("--- Initializing BINANCE OrderInfo ");
             int count = 0;
             if (res.Success)
@@ -186,9 +211,10 @@ namespace CryptoApis.WebsocketApi
                     //Console.WriteLine("BINANCE AccountInfo {0} free:{1} lock:{2} total:{3}", b.Asset, b.Free, b.Locked, b.Total);
                     if (count++ % 10 == 0) Console.Write(".");
                     // Put Order data into m_order
-                    m_order[o.OrderId.ToString()] = o;
+                    var oup = OrderToOrderUpdate(o);
+                    m_order[o.OrderId.ToString()] = oup;
                 }
-                Console.WriteLine(" ({0})", res.Data.Length);
+                Console.WriteLine(" ({0})", res.Data.Count());
             }
             else
             {
@@ -198,22 +224,25 @@ namespace CryptoApis.WebsocketApi
 
         private void StartWebsockets()
         {
-            var successSymbols = m_socketClient.SubscribeToAllSymbolTicker((data) =>
+            var successSymbols = m_socketClient.Spot.SubscribeToAllSymbolTickerUpdates((data) =>
             {
                 //Console.WriteLine(">>>>> {0} BINANCE tickers", data.Length);
-                for (int i = 0; i < data.Length; ++i)
+                for (int i = 0; i < data.Count(); ++i)
                 {
-                    m_tick[data[i].Symbol] = data[i];
+                    m_tick[data.ElementAt(i).Symbol] = data.ElementAt(i) as BinanceStreamTick;
                 }
             });
 
-            var lk = m_client.StartUserStream();
+            var lk = m_client.Spot.UserStream.StartUserStream();
             if (lk.Success)
             {
-                m_listenKey = lk.Data.ListenKey;
-                var successsUser = m_socketClient.SubscribeToUserStream(m_listenKey,
+                m_listenKey = lk.Data;  //.ListenKey;
+                var successsUser = m_socketClient.Spot.SubscribeToUserDataUpdates(m_listenKey,
                     UpdateAccount,
-                    UpdateOrder
+                    UpdateOrder,
+                    UpdateOcoOrder,
+                    UpdateAccountPosition,
+                    UpdateAccountBalance
                 );
             }
             else
@@ -259,9 +288,37 @@ namespace CryptoApis.WebsocketApi
             }
         }
 
+        private void UpdateOcoOrder(BinanceStreamOrderList orderUpdate)
+        {
+            Console.WriteLine("Binance UpdateOcoOrder");
+            /*string oid = orderUpdate.OrderId.ToString();
+            if (m_order.ContainsKey(oid))
+            {
+                if (IsUpdated(orderUpdate))
+                {
+                    m_order[oid] = orderUpdate;     // order is updated
+                }
+            }
+            else
+            {
+                m_order[oid] = orderUpdate;         // order is added
+            }*/
+        }
+
+        private void UpdateAccountPosition(BinanceStreamPositionsUpdate posUpdate)
+        {
+            Console.WriteLine("Binance UpdateAccountPosition");
+        }
+
+        private void UpdateAccountBalance(BinanceStreamBalanceUpdate balUpdate)
+        {
+            Console.WriteLine("Binance UpdateAccountBalance");
+        }
+
         private bool IsUpdated(BinanceStreamBalance balance)
         {
-            BinanceStreamBalance b = m_balance[balance.Asset];
+            //BinanceStreamBalance b = m_balance[balance.Asset];
+            XBalance b = m_balance[balance.Asset];
             bool match = (b.Free == balance.Free && b.Locked == balance.Locked && b.Total == balance.Total);
             return !match;
         }
@@ -275,27 +332,27 @@ namespace CryptoApis.WebsocketApi
 
         private void BinanceWebsocketPublic()
         {
-            var successDepth = m_socketClient.SubscribeToDepthStream("bnbbtc", (data) =>
+            var successDepth = m_socketClient.Spot.SubscribeToOrderBookUpdates("bnbbtc", updateInterval:1000, (data) =>     //SubscribeToDepthStream("bnbbtc", (data) =>
             {
                 // handle data
             });
-            var successTrades = m_socketClient.SubscribeToTradesStream("bnbbtc", (data) =>
+            var successTrades = m_socketClient.Spot.SubscribeToTradeUpdates("bnbbtc", (data) =>     //SubscribeToTradesStream("bnbbtc", (data) =>
             {
                 // handle data
             });
-            var successKline = m_socketClient.SubscribeToKlineStream("bnbbtc", KlineInterval.OneMinute, (data) =>
+            var successKline = m_socketClient.Spot.SubscribeToKlineUpdates("bnbbtc", KlineInterval.OneMinute, (data) =>   //SubscribeToKlineStream("bnbbtc", KlineInterval.OneMinute, (data) =>
             {
                 // handle data
             });
-            var successSymbol = m_socketClient.SubscribeToSymbolTicker("bnbbtc", (data) =>
+            var successSymbol = m_socketClient.Spot.SubscribeToSymbolTickerUpdates("bnbbtc", (data) =>  //SubscribeToSymbolTicker("bnbbtc", (data) =>
             {
                 // handle data
             });
-            var successSymbols = m_socketClient.SubscribeToAllSymbolTicker((data) =>
+            var successSymbols = m_socketClient.Spot.SubscribeToAllSymbolTickerUpdates((data) =>    //SubscribeToAllSymbolTicker((data) =>
             {
                 // handle data
             });
-            var successOrderBook = m_socketClient.SubscribeToPartialBookDepthStream("bnbbtc", 10, (data) =>
+            var successOrderBook = m_socketClient.Spot.SubscribeToPartialOrderBookUpdates("bnbbtc", levels:10, updateInterval:1000, (data) =>   //SubscribeToPartialBookDepthStream("bnbbtc", 10, (data) =>
             {
                 // handle data
             });
@@ -308,32 +365,50 @@ namespace CryptoApis.WebsocketApi
         // should be used to signal the Binance server the stream can be closed.
         private void BinanceWebsocketPrivate(string listenKey)
         {
-            var successOrderBook = m_socketClient.SubscribeToUserStream(listenKey,
-            (accountInfoUpdate) =>
+            var successOrderBook = m_socketClient.Spot.SubscribeToUserDataUpdates(listenKey,    //SubscribeToUserStream(listenKey,
+            (accountInfo) =>
             {
                 // handle account info update
             },
-            (orderInfoUpdate) =>
+            (orderUpdate) =>
             {
-                // handle order info update
+                // handle order update
+            },
+            (orderList) =>
+            {
+                // handle OCO order update
+            },
+            (positionsUpdate) =>
+            {
+                // handle account position update
+            },
+            (balanceUpdate) =>
+            {
+                // handle account balance update
             });
         }
 
         private void BinanceWebsocketHandleEvents()
         {
             // SUBSCRIBE
-            var sub = m_socketClient.SubscribeToAllSymbolTicker(data =>
+            var sub = m_socketClient.Spot.SubscribeToAllSymbolTickerUpdates(data =>
             {
                 Console.WriteLine("Reveived list update");
             });
 
             // HANDLE EVENTS
-            sub.Data.Closed += () =>
+            //sub.Data.Closed += () =>
+            sub.Data.ConnectionLost += () =>
             {
-                Console.WriteLine("Socket closed");
+                Console.WriteLine("Connection lost");
             };
 
-            sub.Data.Error += (e) =>
+            sub.Data.ConnectionRestored += (timeOffline) =>
+            {
+                Console.WriteLine($"Connection restored after {timeOffline}");
+            };
+
+            sub.Data.Exception += (e) =>
             {
                 Console.WriteLine("Socket error " + e.Message);
             };
@@ -341,24 +416,24 @@ namespace CryptoApis.WebsocketApi
             Thread.Sleep(15000);
 
             // UNSUBSCRIBE
-            m_socketClient.UnsubscribeFromStream(sub.Data);
+            m_socketClient.Unsubscribe(sub.Data);   //UnsubscribeFromStream(sub.Data);
 
             // Additionaly, all sockets can be closed with the UnsubscribeAllStreams method.
-            m_socketClient.UnsubscribeAllStreams();
+            m_socketClient.UnsubscribeAll();
         }
 
         // where symbols like "bnbbtc", "ethbtc", ...
         private void SubscribeToAll(string[] symbols)
         {
-            var successDepth = m_socketClient.SubscribeToDepthStream(symbols, (data) =>
+            var successDepth = m_socketClient.Spot.SubscribeToOrderBookUpdates(symbols, updateInterval:1000, (data) =>
             {
                 // handle data
             });
-            var successTrades = m_socketClient.SubscribeToTradesStream(symbols, (data) =>
+            var successTrades = m_socketClient.Spot.SubscribeToTradeUpdates(symbols, (data) =>
             {
                 // handle data
             });
-            var successKline = m_socketClient.SubscribeToKlineStream(symbols, KlineInterval.OneMinute, (data) =>
+            var successKline = m_socketClient.Spot.SubscribeToKlineUpdates(symbols, KlineInterval.OneMinute, (data) =>
             {
                 // handle data
             });
@@ -366,11 +441,11 @@ namespace CryptoApis.WebsocketApi
             {
                 // handle data
             });*/
-            var successSymbols = m_socketClient.SubscribeToAllSymbolTicker((data) =>
+            var successSymbols = m_socketClient.Spot.SubscribeToAllSymbolTickerUpdates((data) =>
             {
                 // handle data
             });
-            var successOrderBook = m_socketClient.SubscribeToPartialBookDepthStream(symbols, 10, (data) =>
+            var successOrderBook = m_socketClient.Spot.SubscribeToPartialOrderBookUpdates(symbols, levels:10, updateInterval:1000, (data) =>
             {
                 // handle data
             });

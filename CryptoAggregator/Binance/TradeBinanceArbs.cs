@@ -11,6 +11,7 @@ using Binance.Net;
 using CryptoApis.SharedModels;
 using CryptoTools;
 using CryptoTools.Cryptography;
+using Binance.Net.Objects.Spot;
 
 namespace Aggregator
 {
@@ -68,7 +69,7 @@ namespace Aggregator
 
         public static void Test()
         {
-            var ai = m_client.GetAccountInfo();
+            var ai = m_client.General.GetAccountInfo();
             var balances = ai.Data.Balances;
             foreach (var b in balances)
             {
@@ -77,11 +78,11 @@ namespace Aggregator
             }
 
             string asset = "BTC";
-            var btcDeposit = m_client.GetDepositAddress(asset).Data;
-            var withdrawalFee = m_client.GetWithdrawalFee(asset).Data;
+            var btcDeposit = m_client.WithdrawDeposit.GetDepositAddress(asset).Data;
+            var withdrawalFee = m_client.WithdrawDeposit.GetAssetDetails().Data[asset].WithdrawFee;
 
-            var depositHistory = m_client.GetDepositHistory(null).Data;      // null for ALL assets
-            var withdrawHistory = m_client.GetWithdrawHistory(null).Data;    // null for ALL assets
+            var depositHistory = m_client.WithdrawDeposit.GetDepositHistory(null).Data;      // null for ALL assets
+            var withdrawHistory = m_client.WithdrawDeposit.GetWithdrawalHistory(null).Data;    // null for ALL assets
             /*string address = "";
             decimal amount = 0.0M;
             m_client.Withdraw(asset, address, amount);*/

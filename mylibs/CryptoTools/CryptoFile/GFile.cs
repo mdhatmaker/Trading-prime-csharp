@@ -35,7 +35,7 @@ namespace CryptoTools.CryptoFile
 
         // Given the filename of a text file (in the current assembly's directory)
         // Return the text from this single-line file
-        public static string GetString(string filename)
+        public static string GetString(string filename, string defaultValue = "")
         {
             string pathname = Path.Combine(GFile.ExePath, filename);
             try
@@ -43,13 +43,13 @@ namespace CryptoTools.CryptoFile
                 using (var reader = new StreamReader(pathname))
                 {
                     var line = reader.ReadLine();
-                    return (line == null ? "" : line.Trim());
+                    return (line == null ? defaultValue : line.Trim());
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Cannot read from file '{0}' ({1})", pathname, ex.Message);
-                return "";
+                return defaultValue;
             }
         }
 

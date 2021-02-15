@@ -10,8 +10,10 @@ using CryptoTools.Models;
 using CryptoExchange.Net.Authentication;
 using Binance.Net;
 using Binance.Net.Objects;
+using Binance.Net.Objects.Spot.MarketStream;
 using System.Threading;
 using CryptoApis.WebsocketApi;
+using Binance.Net.Objects.Spot;
 
 namespace CryptoApis
 {
@@ -79,7 +81,7 @@ namespace CryptoApis
             var xo = m_orders.GetOrder(orderId);
             if (xo.Exchange == "BINANCE")
             {
-                await m_bina.CancelOrderAsync(xo.Symbol, long.Parse(xo.OrderId));
+                await m_bina.Spot.Order.CancelOrderAsync(xo.Symbol, long.Parse(xo.OrderId));
                 //await xo.API.CancelOrderAsync(xo.OrderId, xo.Symbol);
             }
             else

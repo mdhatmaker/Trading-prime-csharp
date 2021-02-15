@@ -192,8 +192,8 @@ namespace CryptoTrader
                     {
                         symbol = coin.ToUpper() + "BTC";
                         var t = m_om.BinanceTickers[symbol];
-                        bid = t.BestBidPrice;
-                        ask = t.BestAskPrice;
+                        bid = t.BidPrice;
+                        ask = t.AskPrice;
                         var mid = (bid + ask) / 2;
                         btcValue = balances[coin].Amount * mid;
                         if (!hideZeroBalances || (btcValue > 0.001M))
@@ -214,7 +214,7 @@ namespace CryptoTrader
                 }
             }
             var tbtc = m_om.BinanceTickers["BTCUSDT"];
-            var btcusdt = (tbtc.BestBidPrice + tbtc.BestAskPrice) / 2;
+            var btcusdt = (tbtc.BidPrice + tbtc.AskPrice) / 2;
             Console.WriteLine("\nTotal BTC:{0:0.00000000} ${1:0.00}", btcTotal, btcTotal * btcusdt);
             decimal usdTotal = 0;
             Console.WriteLine("Total USD:{0:0.00}", usdTotal);
@@ -730,7 +730,7 @@ namespace CryptoTrader
                             {
                                 symbol = "BTCUSDT";
                                 var xtbtc = m_om.BinanceTickers["BTCUSDT"];
-                                var xbid = xtbtc.BestBidPrice;
+                                var xbid = xtbtc.BidPrice;
                                 Console.WriteLine("{0} SELL {1} at {2}", symbol, balances[coin].Amount, xbid);
                                 ApiHelper.Sell(m_api["BINANCE"], symbol, xbid, balances[coin].Amount);
                             }
@@ -745,8 +745,8 @@ namespace CryptoTrader
                         {
                             symbol = coin.ToUpper() + "BTC";
                             var t = m_om.BinanceTickers[symbol];
-                            bid = t.BestBidPrice;
-                            ask = t.BestAskPrice;
+                            bid = t.BidPrice;
+                            ask = t.AskPrice;
                             var mid = (bid + ask) / 2;
                             btcValue = balances[coin].Amount * mid;
                             unit = (unitSize / mid);
@@ -766,8 +766,8 @@ namespace CryptoTrader
                 }
             }
             var tbtc = m_om.BinanceTickers["BTCUSDT"];
-            var btcusdt = (tbtc.BestBidPrice + tbtc.BestAskPrice) / 2;
-            Console.WriteLine("\nTotal BTC:{0:0.00000000}   {1:0.00000000}:{2:0.00000000}", btcTotal, tbtc.BestBidPrice, tbtc.BestAskPrice);
+            var btcusdt = (tbtc.BidPrice + tbtc.AskPrice) / 2;
+            Console.WriteLine("\nTotal BTC:{0:0.00000000}   {1:0.00000000}:{2:0.00000000}", btcTotal, tbtc.BidPrice, tbtc.AskPrice);
             //decimal usdTotal = 0;
             //Console.WriteLine("Total USD:{0:0.00}", usdTotal);
             //Console.WriteLine("TOTAL   $:{0:0.00}", btcTotal * btcusdt + usdTotal);

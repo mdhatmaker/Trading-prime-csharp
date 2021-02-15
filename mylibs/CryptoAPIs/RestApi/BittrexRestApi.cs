@@ -45,10 +45,10 @@ namespace CryptoApis.RestApi
         public List<string> GetAllSymbols()
         {
             var result = new List<string>();
-            var res = m_client.GetMarketSummaries();
+            var res = m_client.GetSymbolSummaries();    //GetMarketSummaries();
             foreach (var p in res.Data)
             {
-                result.Add(p.MarketName);
+                result.Add(p.Symbol);   //MarketName);
             }
             return result;
         }

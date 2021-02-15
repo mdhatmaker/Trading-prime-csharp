@@ -22,7 +22,7 @@ namespace CryptoApis.Models
         }
 
         // Binance
-        public XTickerMap(Binance.Net.Objects.BinanceBookPrice[] prices)
+        public XTickerMap(IEnumerable<Binance.Net.Objects.Spot.MarketData.BinanceBookPrice> prices)
         {
             foreach (var p in prices)
             {

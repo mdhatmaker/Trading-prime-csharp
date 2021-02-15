@@ -14,10 +14,14 @@ using CryptoApis.Models;
 using ES = ExchangeSharp;
 using Binance.Net;
 using Binance.Net.Objects;
+using Binance.Net.Objects.Spot.SpotData;
 using CryptoTools;
 using CryptoTools.Net;
 using static CryptoTools.Global;
 using CryptoTools.Models;
+using Binance.Net.Enums;
+using Binance.Net.Objects.Spot.MarketData;
+using Binance.Net.Objects.Spot;
 
 namespace CryptoApis.RestApi
 {
@@ -52,25 +56,26 @@ namespace CryptoApis.RestApi
 
         public async Task<XTickerMap> GetTickers()
         {
-            var res = await m_client.GetAllBookPricesAsync();
+            var res = await m_client.Spot.Market.GetAllBookPricesAsync();
             return new XTickerMap(res.Data);
         }
 
         public async Task<BinancePlacedOrder> Sell(string symbolId, decimal qty, decimal price)
         {
             string symbol = GetSymbol(symbolId);
-            var side = Binance.Net.Objects.OrderSide.Sell;
+            var side = Binance.Net.Enums.OrderSide.Sell;
             var type = OrderType.Limit;
             string oid = null;
             var tif = TimeInForce.GoodTillCancel;
-            var res = await m_client.PlaceOrderAsync(symbol, side, type, qty, oid, price, tif);
+            decimal quoteOrderQty = qty;
+            var res = await m_client.Spot.Order.PlaceOrderAsync(symbol, side, type, qty, quoteOrderQty, oid, price, tif);
             if (res.Error != null) Console.WriteLine("Binance::Sell ERROR: {0} {1}", res.Error.Code, res.Error.Message);
             return res.Data;
         }
 
         public async Task<BinanceExchangeInfo> GetExchangeInfo()
         {
-            var res = await m_client.GetExchangeInfoAsync();
+            var res = await m_client.Spot.System.GetExchangeInfoAsync();
             if (res.Error != null) Console.WriteLine("Binance::GetExchangeInfo ERROR: {0} {1}", res.Error.Code, res.Error.Message);
             return res.Data;
         }
@@ -91,7 +96,7 @@ namespace CryptoApis.RestApi
         public IEnumerable<XOrder> GetOpenOrders(string symbol = null)
         {
             var result = new List<XOrder>();
-            var res = m_client.GetOpenOrders(symbol);
+            var res = m_client.Spot.Order.GetOpenOrders(symbol);
             // TODO: check for errors here
             foreach (var bo in res.Data)
             {
@@ -104,7 +109,7 @@ namespace CryptoApis.RestApi
         public IEnumerable<XOrder> GetAllOrders(string symbol)
         {
             var result = new List<XOrder>();
-            var res = m_client.GetAllOrders(symbol);
+            var res = m_client.Spot.Order.GetAllOrders(symbol);
             // TODO: check for errors here
             foreach (var bo in res.Data)
             {
@@ -125,7 +130,7 @@ namespace CryptoApis.RestApi
         public List<string> GetAllSymbols()
         {
             var result = new List<string>();
-            var res = m_client.GetAllPricesAsync();
+            var res = m_client.Spot.Market.GetAllPricesAsync();
             res.Wait();
             foreach (var p in res.Result.Data)
             {
@@ -146,13 +151,13 @@ namespace CryptoApis.RestApi
         public async Task<XTicker> GetTicker(string symbolId)
         {
             string symbol = GetSymbol(symbolId);
-            var res = await m_client.GetBookPriceAsync(symbol);
+            var res = await m_client.Spot.Market.GetBookPriceAsync(symbol);
             return new XTicker(res.Data);
         }
 
         public async Task<XBalanceMap> GetBalances()
         {
-            var res = await m_client.GetAccountInfoAsync();
+            var res = await m_client.General.GetAccountInfoAsync();
             return new XBalanceMap(res.Data);
         }
         #endregion ----------------------------------------------------------------------------------
@@ -162,14 +167,14 @@ namespace CryptoApis.RestApi
             var xo = new XOrder("BINANCE", strategyId);
 
             //xo.API = api;
-            xo.Amount = bo.OriginalQuantity;
-            xo.AmountFilled = bo.ExecutedQuantity;
+            xo.Amount = bo.Quantity;                //.OriginalQuantity;
+            xo.AmountFilled = bo.QuantityFilled;    //.ExecutedQuantity;
             xo.AveragePrice = bo.Price;
             xo.Fees = 0;
             xo.FeesCurrency = "";
-            xo.IsBuy = bo.Side == Binance.Net.Objects.OrderSide.Buy;
+            xo.IsBuy = bo.Side == Binance.Net.Enums.OrderSide.Buy;
             xo.Message = "";
-            xo.OrderDate = bo.Time;
+            xo.OrderDate = bo.CreateTime;           //.Time;
             xo.OrderId = bo.OrderId.ToString();
             xo.Price = bo.Price;
             xo.Result = MapToResult(bo.Status);
@@ -202,7 +207,7 @@ namespace CryptoApis.RestApi
             return d[status];
         }*/
 
-        private OrderResult MapToResult(Binance.Net.Objects.OrderStatus status)
+        private OrderResult MapToResult(Binance.Net.Enums.OrderStatus status)
         {
             var d = new Dictionary<OrderStatus, OrderResult>() {
                 { OrderStatus.New, OrderResult.Pending },

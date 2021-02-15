@@ -31,7 +31,7 @@ namespace CryptoApis.Models
         }
 
         // Bitfinex
-        public XBalanceMap(Bitfinex.Net.Objects.BitfinexWallet[] wallets)
+        public XBalanceMap(IEnumerable<Bitfinex.Net.Objects.BitfinexWallet> wallets)
         {
             foreach (var w in wallets)
             {
@@ -40,7 +40,7 @@ namespace CryptoApis.Models
         }
 
         // Binance
-        public XBalanceMap(Binance.Net.Objects.BinanceAccountInfo ai)
+        public XBalanceMap(Binance.Net.Objects.Spot.SpotData.BinanceAccountInfo ai)
         {
             foreach (var b in ai.Balances)
             {
@@ -49,7 +49,7 @@ namespace CryptoApis.Models
         }
 
         // Bittrex
-        public XBalanceMap(Bittrex.Net.Objects.BittrexBalance[] balances)
+        public XBalanceMap(IEnumerable<Bittrex.Net.Objects.BittrexBalance> balances)
         {
             foreach (var b in balances)
             {

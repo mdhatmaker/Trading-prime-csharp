@@ -31,22 +31,31 @@ namespace CryptoApis.Models
             AskSize = 0;     // no ask size provided
         }
 
-        // Bitfinex
+        /*// Bitfinex
         public XTicker(Bitfinex.Net.Objects.BitfinexMarketOverviewRest mo)
         {
             Bid = mo.Bid;
             Ask = mo.Ask;
             BidSize = mo.BidSize;
             AskSize = mo.AskSize;
+        }*/
+
+        // Bitfinex
+        public XTicker(Bitfinex.Net.Objects.BitfinexSymbolOverview so)
+        {
+            Bid = so.Bid;
+            Ask = so.Ask;
+            BidSize = so.BidSize;
+            AskSize = so.AskSize;
         }
 
         // Binance
-        public XTicker(Binance.Net.Objects.BinanceBookPrice bp)
+        public XTicker(Binance.Net.Objects.Spot.MarketData.BinanceBookPrice bp)
         {
-            Bid = bp.BidPrice;
-            Ask = bp.AskPrice;
-            BidSize = bp.BidQuantity;
-            AskSize = bp.AskQuantity;
+            Bid = bp.BestBidPrice;
+            Ask = bp.BestAskPrice;
+            BidSize = bp.BestBidQuantity;
+            AskSize = bp.BestAskQuantity;
         }
 
         // Bittrex

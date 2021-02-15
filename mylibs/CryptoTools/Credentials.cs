@@ -10,13 +10,24 @@ namespace CryptoTools
 {
     public class Credentials
     {
-        public static string CredentialsFile => Path.Combine(GFile.GetString("apis.path.txt"), "system.apis.enc");   // read ".enc" file from application path
-        // TODO: MUST take this out of code!!!!
-        public static string CredentialsPassword => @"mywookie";
+        public static string CredentialsFile => GetFilepath("path.apis.txt", "system.apis.csv.enc");   // read ".enc" file from application path
+        public static string PasswordFile => GetFilepath("path.pw.txt", "system.pw.txt");
+
+        public static string CredentialsPassword => GFile.GetString(PasswordFile);
 
         public int Count { get { return m_creds.Count; } }
 
         private SortedDictionary<string, CredentialEntry> m_creds = new SortedDictionary<string, CredentialEntry>();
+
+        // Given a filename within the executable path and a filename
+        // Return a Filepath that combines the path in the pathFilename file and the given filename
+        // where pathFilename like "path.apis.txt" or "path.pw.txt"
+        // where filename like "system.apis.enc" or "system.pw.txt"
+        // If the pathFilename doesn't exist in executable path, default to "C:\cryptomania"
+        public static string GetFilepath(string pathFilename, string filename)
+        {
+            return Path.Combine(GFile.GetString(pathFilename, "C:\\cryptomania"), filename);
+        }
 
         public void Add(string name, CredentialEntry credentialEntry)
         {
