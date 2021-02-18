@@ -21,7 +21,9 @@ namespace CryptoDataVacuum
 
         UpdateSubscription subscription;
 
-        public BitfinexExchange()
+        KafkaProducer _p;
+
+        public BitfinexExchange(KafkaProducer p)
         {
             var evKeys = Environment.GetEnvironmentVariable(ApiKeyEnvVar, EnvironmentVariableTarget.User);
             var keys = evKeys.Split('|');
@@ -33,6 +35,8 @@ namespace CryptoDataVacuum
             var socketOptions = new BitfinexSocketClientOptions();
             socketOptions.ApiCredentials = clientOptions.ApiCredentials;
             this.sock = new BitfinexSocketClient(socketOptions);
+
+            _p = p;
         }
 
 
@@ -47,8 +51,8 @@ namespace CryptoDataVacuum
         {
             Console.WriteLine($"  --- Starting {ExchName} SymbolTickerUpdates thread ---");
             var resSymbols = exch.GetSymbols();
-            //var symbols = resSymbols.Data.Take(5);  // TODO: *** FOR TESTING ONLY ***
-            var symbols = resSymbols.Data;
+            var symbols = resSymbols.Data.Take(15);  // TODO: *** FOR TESTING ONLY ***
+            //var symbols = resSymbols.Data;
             int count = symbols.Count();
             int i = 0;
             foreach (var s in symbols)
@@ -69,7 +73,8 @@ namespace CryptoDataVacuum
                 DateTime dt = DateTime.Now.ToUniversalTime();
                 //Console.WriteLine($"{dt:G} [{ExchName} {symbol}]  {tick.LastPrice} ({tick.Volume}/{quoteVolume})    B {tick.BidSize} : {tick.Bid}  x  {tick.Ask} : {tick.AskSize} A");
                 string msg = string.Format($"{dt:G},{ExchName},{symbol},{tick.LastPrice},{tick.Volume},{quoteVolume},{tick.BidSize},{tick.Bid},{tick.Ask},{tick.AskSize}");
-                Console.WriteLine(msg);
+                //Console.WriteLine(msg);
+                _p.Produce(msg);
             });
 
             this.subscription = crSubSymbolTicker.Data;
@@ -93,14 +98,6 @@ namespace CryptoDataVacuum
             Tools.WriteStringsToCsv(symbols, Tools.SymbolFilepath(ExchName), "Symbol");
         }
 
-        public async Task DemoSymbolTickerUpdates(int sleepSeconds = 20)
-        {
-            Console.WriteLine($"--- Running {ExchName} SymbolTickerUpdates thread for {sleepSeconds} seconds ---");
-            await SubscribeAllTickerUpdates();
-            Thread.Sleep(sleepSeconds * 1000);
-            //await UnsubscribeSymbolTickerUpdates();
-            await UnsubscribeAllUpdates();
-        }
 
     } // class
 

@@ -10,7 +10,7 @@ namespace CryptoDataVacuum
 {
     public class Tools
     {
-        static string RootFolder = "C:\\cryptoZ\\";
+        static string RootFolder = "C:\\cryptoZ";
 
         #region ========== FILE HELPER METHODS ==========================================
         public static void WriteObjectsToCsv<T>(IEnumerable<T> data, string filepath, string singleColumnHeader = null)

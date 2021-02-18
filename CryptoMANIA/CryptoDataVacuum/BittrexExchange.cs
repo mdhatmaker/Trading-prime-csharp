@@ -21,7 +21,9 @@ namespace CryptoDataVacuum
 
         UpdateSubscription subscription;
 
-        public BittrexExchange()
+        KafkaProducer _p;
+
+        public BittrexExchange(KafkaProducer p)
         {
             var evKeys = Environment.GetEnvironmentVariable(ApiKeyEnvVar, EnvironmentVariableTarget.User);
             var keys = evKeys.Split('|');
@@ -33,6 +35,8 @@ namespace CryptoDataVacuum
             var socketOptions = new BittrexSocketClientOptions();
             socketOptions.ApiCredentials = clientOptions.ApiCredentials;
             this.sock = new BittrexSocketClient(socketOptions);
+
+            _p = p;
         }
 
 
@@ -43,18 +47,33 @@ namespace CryptoDataVacuum
             Console.WriteLine($"[{ExchName}]   {symbols.Count()} symbols");
         }
 
+        private void ProduceToKafka(IEnumerable<BittrexStreamSymbolSummary> ticks)
+        {
+            //Console.WriteLine($"[{ExchName}]   {ticks.Count()} symbol ticker updates received");
+            foreach (var tick in ticks)
+            {
+                int bidQty = 0, askQty = 0; // Bittrex Tick does not have BidQty/AskQty
+                //Console.WriteLine($"{tick.TimeStamp:G} [{ExchName} {tick.Symbol}]  {tick.Last} ({tick.BaseVolume}/{tick.Volume})   B  {bidQty} : {tick.Bid}  x  {tick.Ask} x {askQty}  A");
+                string msg = string.Format($"{tick.TimeStamp:G},{ExchName},{tick.Symbol},{tick.Last},{tick.BaseVolume},{tick.Volume},{bidQty},{tick.Bid},{tick.Ask},{askQty}");
+                //Console.WriteLine(msg);
+                _p.Produce(msg);
+            }
+        }
+
         public async Task SubscribeAllTickerUpdates()
         {
             Console.WriteLine($"  --- Starting {ExchName} SymbolTickerUpdates thread ---");
             var crSubSymbolTicker = sock.SubscribeToSymbolSummariesUpdate((ticks) =>
             {
-                //Console.WriteLine($"[{ExchName}]   {ticks.Count()} symbol ticker updates received");
+                Task.Factory.StartNew(() => ProduceToKafka(ticks));
+                /*//Console.WriteLine($"[{ExchName}]   {ticks.Count()} symbol ticker updates received");
                 var tick = ticks.First();
                 //Console.WriteLine($"[{ExchName} {tick.Symbol}]   {tick.BidQuantity}x{tick.BidPrice}  {tick.AskPrice}x{tick.AskQuantity}   (example 1st update)");
                 int bidQty = 0, askQty = 0; // Bittrex Tick does not have BidQty/AskQty
                 //Console.WriteLine($"{tick.TimeStamp:G} [{ExchName} {tick.Symbol}]  {tick.Last} ({tick.BaseVolume}/{tick.Volume})   B  {bidQty} : {tick.Bid}  x  {tick.Ask} x {askQty}  A");
                 string msg = string.Format($"{tick.TimeStamp:G},{ExchName},{tick.Symbol},{tick.Last},{tick.BaseVolume},{tick.Volume},{bidQty},{tick.Bid},{tick.Ask},{askQty}");
-                Console.WriteLine(msg);
+                //Console.WriteLine(msg);
+                _p.Produce(msg);*/
             });
             
             this.subscription = crSubSymbolTicker.Data;
@@ -78,14 +97,6 @@ namespace CryptoDataVacuum
             Tools.WriteObjectsToCsv(symbols, Tools.SymbolFilepath(ExchName));
         }
 
-        public async Task DemoSymbolTickerUpdates(int sleepSeconds = 20)
-        {
-            Console.WriteLine($"--- Running {ExchName} SymbolTickerUpdates thread for {sleepSeconds} seconds ---");
-            await SubscribeAllTickerUpdates();
-            Thread.Sleep(sleepSeconds * 1000);
-            //await UnsubscribeSymbolTickerUpdates();
-            await UnsubscribeAllUpdates();
-        }
 
     } // class
 

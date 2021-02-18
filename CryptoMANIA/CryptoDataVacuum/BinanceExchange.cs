@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Binance.Net;
+using Binance.Net.Interfaces;
 using Binance.Net.Objects.Spot;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Sockets;
@@ -21,7 +22,9 @@ namespace CryptoDataVacuum
 
         UpdateSubscription subscription;
 
-        public BinanceExchange()
+        KafkaProducer _p;
+
+        public BinanceExchange(KafkaProducer p)
         {
             var evKeys = Environment.GetEnvironmentVariable(ApiKeyEnvVar, EnvironmentVariableTarget.User);
             var keys = evKeys.Split('|');
@@ -33,6 +36,8 @@ namespace CryptoDataVacuum
             var socketOptions = new BinanceSocketClientOptions();
             socketOptions.ApiCredentials = clientOptions.ApiCredentials;
             this.sock = new BinanceSocketClient(socketOptions);
+
+            _p = p;
         }
         
 
@@ -44,17 +49,32 @@ namespace CryptoDataVacuum
             Console.WriteLine($"[{ExchName}]   {symbols.Count()} symbols");
         }
 
+        private void ProduceToKafka(IEnumerable<IBinanceTick> ticks)
+        {
+            //Console.WriteLine($"[{ExchName}]   {ticks.Count()} symbol ticker updates received");
+            foreach (var tick in ticks)
+            {
+                //tick.LastQuantity
+                //Console.WriteLine($"{tick.CloseTime:G} [{ExchName} {tick.Symbol}]  {tick.LastPrice} ({tick.BaseVolume}/{tick.QuoteVolume})    B {tick.LastPrice}{tick.BidQuantity} : {tick.BidPrice}  x  {tick.AskPrice} : {tick.AskQuantity} A");
+                string msg = string.Format($"{tick.CloseTime:G},{ExchName},{tick.Symbol},{tick.LastPrice},{tick.BaseVolume},{tick.QuoteVolume},{tick.LastPrice}{tick.BidQuantity},{tick.BidPrice},{tick.AskPrice},{tick.AskQuantity}");
+                //Console.WriteLine(msg);
+                _p.Produce(msg);
+            }
+        }
+
         public async Task SubscribeAllTickerUpdates()
         {
             Console.WriteLine($"  --- Starting {ExchName} SymbolTickerUpdates thread ---");
             var crSubSymbolTicker = sock.Spot.SubscribeToAllSymbolTickerUpdates((ticks) =>
             {
-                //Console.WriteLine($"[{ExchName}]   {ticks.Count()} symbol ticker updates received");
+                Task.Factory.StartNew(() => ProduceToKafka(ticks));
+                /*//Console.WriteLine($"[{ExchName}]   {ticks.Count()} symbol ticker updates received");
                 var tick = ticks.First();
                 //tick.LastQuantity
                 //Console.WriteLine($"{tick.CloseTime:G} [{ExchName} {tick.Symbol}]  {tick.LastPrice} ({tick.BaseVolume}/{tick.QuoteVolume})    B {tick.LastPrice}{tick.BidQuantity} : {tick.BidPrice}  x  {tick.AskPrice} : {tick.AskQuantity} A");
                 string msg = string.Format($"{tick.CloseTime:G},{ExchName},{tick.Symbol},{tick.LastPrice},{tick.BaseVolume},{tick.QuoteVolume},{tick.LastPrice}{tick.BidQuantity},{tick.BidPrice},{tick.AskPrice},{tick.AskQuantity}");
-                Console.WriteLine(msg);
+                //Console.WriteLine(msg);
+                _p.Produce(msg);*/
             });
 
             this.subscription = crSubSymbolTicker.Data;
@@ -79,16 +99,7 @@ namespace CryptoDataVacuum
             Tools.WriteObjectsToCsv(symbols, Tools.SymbolFilepath(ExchName));
         }
 
-        public async Task DemoSymbolTickerUpdates(int sleepSeconds = 20)
-        {
-            Console.WriteLine($"--- Running {ExchName} SymbolTickerUpdates thread for {sleepSeconds} seconds ---");
-            await SubscribeAllTickerUpdates();
-            Thread.Sleep(sleepSeconds * 1000);
-            //await UnsubscribeSymbolTickerUpdates();
-            await UnsubscribeAllUpdates();
-
-        }
-
+        
     } // class
 
 } // namespace

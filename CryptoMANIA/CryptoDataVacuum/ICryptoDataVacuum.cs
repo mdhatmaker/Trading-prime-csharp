@@ -13,7 +13,6 @@ namespace CryptoDataVacuum
         Task SubscribeAllTickerUpdates();
         //Task UnsubscribeTickerUpdates();
         Task UnsubscribeAllUpdates();
-        Task DemoSymbolTickerUpdates(int sleepSeconds = 20);
     } // interface
 
 } // namespace
