@@ -43,7 +43,7 @@ namespace CryptoConsole
 
         static async Task Main(string[] args)
         {
-            Console.WriteLine("\n=== WECOME TO CRYPTO CONSOLE ===\n");
+            Console.WriteLine("\n=== WELCOME TO CRYPTO CONSOLE ===\n");
 
 
             // --- FOR DEBUGGING ONLY: CAN SET COMMAND-LINE ARGUMENTS ---
