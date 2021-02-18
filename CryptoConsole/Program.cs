@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
@@ -16,6 +17,18 @@ using CryptoApis.Exchange.HitBtc;
 using static CryptoTools.Global;
 using CryptoTools.Models;
 using CryptoTools;
+using Binance.Net;
+using Binance.Net.Objects.Spot;
+using CsvHelper;
+using System.Globalization;
+using Bittrex.Net.Objects;
+using Bittrex.Net;
+using CryptoExchange.Net.Authentication;
+using Bitfinex.Net;
+using Bitfinex.Net.Objects;
+using Confluent.Kafka;
+using CryptoExchange.Net.Sockets;
+using System.Diagnostics;
 
 namespace CryptoConsole
 {
@@ -25,15 +38,24 @@ namespace CryptoConsole
 
         //static Dictionary<string, List<HitBtcTicker>> m_hitTickers;             // HitBTC tickers
 
-        static void Main(string[] args)
+        static string SymbolFolder = "C:\\cryptomania\\";
+
+
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("\n*** WECOME TO CRYPTO CONSOLE ***\n");
+            Console.WriteLine("\n=== WECOME TO CRYPTO CONSOLE ===\n");
 
-            //args = new string[] { "balance", "BINANCE", "btcusdt" };
-            args = new string[] { "balance", "ALL", "*" };
 
-            m_factory = new ApiFactory(Credentials.CredentialsFile, Credentials.CredentialsPassword);
-            
+            // --- FOR DEBUGGING ONLY: CAN SET COMMAND-LINE ARGUMENTS ---
+#if DEBUG
+            if (Debugger.IsAttached)
+            {
+                //args = new string[] { "balance", "BINANCE", "btcusdt" };
+                //args = new string[] { "balance", "ALL", "*" };
+                args = new string[] { "demo" };
+            }
+#endif
+
             if (args.Length == 0)
             {
                 Console.WriteLine("usage: dotnet CryptoConsole.dll gator <symbol> <amount> <bips> (#display)");
@@ -41,100 +63,411 @@ namespace CryptoConsole
                 Console.WriteLine("       dotnet CryptoConsole.dll encrypt <csvfile> <8-char-password>");
                 Console.WriteLine();
             }
-            else if (args[0].ToUpper() == "GATOR")
-                ExecuteGator(args);
-            else if (args[0].ToUpper() == "BALANCE")
-                ExecuteBalance(args);
-            else if (args[0].ToUpper() == "ENCRYPT")
-                ExecuteEncrypt(args);
-
-            //CryptoTools.Cryptography.Cryptography.EncryptFile("X:/Users/Trader/Documents/hat_apis.json", "/Users/michael/Documents/hat_apis.enc", pw);    // encrypt api key file
-            //var api = m_factory.Get("HITBTC") as CryptoApis.Exchange.HitBtc.HitBtcRestApi;
-            
-            /*//var symbols = api.GetSymbols();
-            m_factory = new ApiFactory(m_credentialsFile, m_pw);*/
-
-			//string password = "12345678";
-			//var apiXS = new ExchangeSharpRestApi("/Users/michael/Documents/hat_apis.csv.enc", password);
-			
-				
-			//DisplayBinanceTotals();
-            //BinanceSellAllCurrency(1.0M);
-
-            /*//var api = m_factory.Get("HITBTC") as CryptoRestApis.Exchange.HitBtc.HitBtcRestApi;
-            //var symbols = api.GetSymbols();
-
-            //symbols.ForEach(s => Console.WriteLine(s));
-            var t1 = api.GetOneTicker("DASHBTC");
-            Console.WriteLine(t1);
-            var c1 = api.GetCandles("DASHBTC");
-            c1.ForEach(cc => Console.WriteLine(cc));*/
-
-            /*Console.Write("\n\nPress any key to exit... ");
-            Console.ReadKey();
-            return;
-
-            string pathname = Path.Combine(GetExeDirectory(), "data.hitbtc_tickers.txt");
-            bool writeHeaders = !File.Exists(pathname);
-            var writer = new StreamWriter(pathname, true);
-            if (writeHeaders)
+#if DEBUG
+            else if (args[0].ToUpper() == "DEMO")
             {
-                writer.WriteLine(HitBtcTicker.CsvHeaders);
-                writer.Flush();
+                await DemoExchanges();
+                await DemoKafka();
+
+                Console.WriteLine("\n\nDone...Press ENTER to exit");
+                Console.ReadLine();
             }
-            
-            while (true)
+#endif
+            else
             {
-                var tickers = api.GetAllTickers();
-                if (m_hitTickers == null)           // first time through, create the dictionary to store HitBtc data
-                {
-                    m_hitTickers = new Dictionary<string, List<HitBtcTicker>>();
-                    foreach (var t in tickers)
-                    {
-                        m_hitTickers[t.symbol] = new List<HitBtcTicker>();
-                        m_hitTickers[t.symbol].Add(t);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine(new string('=', 120));
-                    int count = 0;
-                    foreach (var t in tickers)
-                    {
-                        if (!m_hitTickers.ContainsKey(t.symbol))                // if we have not yet stored this symbol...
-                        {
-                            m_hitTickers[t.symbol] = new List<HitBtcTicker>();  // create a new list for this symbol's tickers
-                            m_hitTickers[t.symbol].Add(t);
-                        }
-                        else
-                        {
-                            var last = m_hitTickers[t.symbol].Last();           // check the last ticker we added to the list for this symbol
-                            if (true)   //last.timestamp != t.timestamp)                  // only add to our stored tickers if the "last_updated" field has changed
-                            {
-                                m_hitTickers[t.symbol].Add(t);
-                                //Console.WriteLine(t);
-                                writer.WriteLine(t.ToCsv());
-                                writer.Flush();
-                                count++;
-                            }                            
-                        }
-                    }
-                    Console.WriteLine("{0} ({1} updates)", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), count);
-                }
-                Thread.Sleep(20000);                // sleep for 20 seconds
+                m_factory = new ApiFactory(Credentials.CredentialsFile, Credentials.CredentialsPassword);
+
+                if (args[0].ToUpper() == "GATOR")
+                    ExecuteGator(args);
+                else if (args[0].ToUpper() == "BALANCE")
+                    ExecuteBalance(args);
+                else if (args[0].ToUpper() == "ENCRYPT")
+                    ExecuteEncrypt(args);
             }
 
+            //System.Environment.Exit(0);
 
-            //BinanceTotals();
-            //var mgr = new CryptoTools.SymbolManager();
-            //SellBinance(0.50M, "bnb");
+        } // end of Main
 
 
-            Console.Write("\n\nPress any key to exit... ");
-            Console.ReadKey();
-            return;
-            */
+        #region ========== FILE HELPER METHODS ==========================================
+        static void WriteObjectsToCsv<T>(IEnumerable<T> data, string filepath, string singleColumnHeader = null)
+        {
+            using (var writer = new StreamWriter(filepath))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                csv.WriteRecords(data);
+            }
         }
+
+        static void WriteStringsToCsv(IEnumerable<string> data, string filepath, string singleColumnHeader)
+        {
+            using (var writer = new StreamWriter(filepath))
+            {
+                writer.WriteLine(singleColumnHeader);
+                data.ForEach(s => writer.WriteLine(s));
+            }
+        }
+
+        // Given an exchange name
+        // Return the full filepath of the .csv symbols file
+        static string SymbolFilepath(string exchName)
+        {
+            var filepath = Path.Join(SymbolFolder, $"symbols.{exchName}.csv");
+            return filepath;
+        }
+#endregion ======================================================================
+
+
+        #region ========== CREATE CLIENT/SOCKET FOR EACH EXCHANGE =======================
+        static void CreateBinanceExchange(out BinanceClient exch, out BinanceSocketClient sock)
+        {
+            var evKeys = Environment.GetEnvironmentVariable( "BINANCE_KEY", EnvironmentVariableTarget.User);
+            var keys = evKeys.Split('|');
+
+            var clientOptions = new BinanceClientOptions();
+            clientOptions.ApiCredentials = new ApiCredentials(keys[0], keys[1]);
+            exch = new BinanceClient(clientOptions);
+            //----------
+            var socketOptions = new BinanceSocketClientOptions();
+            socketOptions.ApiCredentials = clientOptions.ApiCredentials;
+            sock = new BinanceSocketClient(socketOptions);
+        }
+
+        static void CreateBittrexExchange(out BittrexClient exch, out BittrexSocketClient sock)
+        {
+            var evKeys = Environment.GetEnvironmentVariable("BITTREX_KEY", EnvironmentVariableTarget.User);
+            var keys = evKeys.Split('|');
+
+            var clientOptions = new BittrexClientOptions();
+            clientOptions.ApiCredentials = new ApiCredentials(keys[0], keys[1]);
+            exch = new BittrexClient(clientOptions);
+            //----------
+            var socketOptions = new BittrexSocketClientOptions();
+            socketOptions.ApiCredentials = clientOptions.ApiCredentials;
+            sock = new BittrexSocketClient(socketOptions);
+        }
+
+        static void CreateBitfinexExchange(out BitfinexClient exch, out BitfinexSocketClient sock)
+        {
+            var evKeys = Environment.GetEnvironmentVariable("BITFINEX_KEY", EnvironmentVariableTarget.User);
+            var keys = evKeys.Split('|');
+
+            var clientOptions = new BitfinexClientOptions();
+            clientOptions.ApiCredentials = new ApiCredentials(keys[0], keys[1]);
+            exch = new BitfinexClient(clientOptions);
+            //----------
+            var socketOptions = new BitfinexSocketClientOptions();
+            socketOptions.ApiCredentials = clientOptions.ApiCredentials;
+            sock = new BitfinexSocketClient(socketOptions);
+        }
+        #endregion ======================================================================
+
+        #region ========== BINANCE METHODS ==============================================
+        static async Task DemoBinanceSimple(BinanceClient exch)
+        {
+            string exchName = "BINANCE";
+            var eiRes = await exch.Spot.System.GetExchangeInfoAsync();
+            var ei = eiRes.Data;
+            var symbols = ei.Symbols;
+            Console.WriteLine($"[{exchName}]   {symbols.Count()} symbols");
+            /*var aiRes = await exch.General.GetAccountInfoAsync();
+            var ai = aiRes.Data;
+            var symbol = exch.GetSymbolName("BTC", "USDT");
+            var price24h = await exch.Spot.Market.Get24HPriceAsync(symbol);
+            for (int i = 0; i < 10; ++i)
+            {
+                var resBook = await exch.Spot.Market.GetBookPriceAsync(symbol);
+                var book = resBook.Data;
+                Console.WriteLine($"[{exchName} {symbol}]   {book.BestBidQuantity:n6} x {book.BestBidPrice:n2}   {book.BestAskPrice:n2} x {book.BestAskQuantity:n6}");
+                Thread.Sleep(1000);
+            }*/
+        }
+
+        static async Task DemoBinanceSymbolTickerUpdates(BinanceSocketClient sock, int sleepSeconds = 20)
+        {
+            Console.WriteLine($"--- Running BINANCE SymbolTickerUpdates thread for {sleepSeconds} seconds ---");
+            var subscription = BinanceSubscribe(sock);
+            Thread.Sleep(sleepSeconds * 1000);
+            await BinanceUnsubscribe(sock, subscription);
+        }
+
+        static UpdateSubscription BinanceSubscribe(BinanceSocketClient sock)
+        {
+            string exchName = "BINANCE";
+
+            /*sock.Spot.SubscribeToAllBookTickerUpdates((binanceStreamBookPrice) =>
+            {
+
+            });*/
+            var crSubSymbolTicker = sock.Spot.SubscribeToAllSymbolTickerUpdates((binanceTick) =>
+            {
+                Console.WriteLine($"[{exchName}]   {binanceTick.Count()} symbol ticker updates received");
+                var tick = binanceTick.First();
+                Console.WriteLine($"[{exchName} {tick.Symbol}]   {tick.BidQuantity}x{tick.BidPrice}  {tick.AskPrice}x{tick.AskQuantity}   (example 1st update)");
+            });
+
+            var subSymbolTicker = crSubSymbolTicker.Data;
+            return subSymbolTicker;
+        }
+
+        static async Task BinanceUnsubscribe(BinanceSocketClient sock, UpdateSubscription subscription)
+        {
+            await sock.Unsubscribe(subscription);
+        }
+
+        static async Task BinanceWriteSymbolsCsv(BinanceClient exch)
+        {
+            string exchName = "BINANCE";
+            var eiRes = await exch.Spot.System.GetExchangeInfoAsync();
+            var ei = eiRes.Data;
+            var symbols = ei.Symbols;
+            Console.WriteLine($"[{exchName}]   {symbols.Count()} symbols");
+            WriteObjectsToCsv(symbols, SymbolFilepath(exchName));
+        }
+#endregion ======================================================================
+
+        #region ========== BITTREX METHODS ==============================================
+        static async Task DemoBittrexSimple(BittrexClient exch)
+        {
+            string exchName = "BITTREX";
+            var resSymbols = await exch.GetSymbolsAsync();
+            var symbols = resSymbols.Data;
+            Console.WriteLine($"[{exchName}]   {symbols.Count()} symbols");
+        }
+
+        static async Task DemoBittrexSymbolTickerUpdates(BittrexSocketClient sock, int sleepSeconds = 20)
+        {
+            string exchName = "BITTREX";
+            Console.WriteLine($"--- Running {exchName} SymbolTickerUpdates thread for {sleepSeconds} seconds ---");
+            var subscription = BittrexSubscribe(sock);
+            Thread.Sleep(sleepSeconds * 1000);
+            await BittrexUnsubscribe(sock, subscription);
+        }
+
+        static UpdateSubscription BittrexSubscribe(BittrexSocketClient sock)
+        {
+            string exchName = "BITTREX";
+
+            /*var crSubSymbolTicker = sock.Spot.SubscribeToAllSymbolTickerUpdates((binanceTick) =>
+            {
+                Console.WriteLine($"[{exchName}]   {binanceTick.Count()} symbol ticker updates received");
+                var tick = binanceTick.First();
+                Console.WriteLine($"[{exchName} {tick.Symbol}]   {tick.BidQuantity}x{tick.BidPrice}  {tick.AskPrice}x{tick.AskQuantity}   (example 1st update)");
+            });
+
+            var subSymbolTicker = crSubSymbolTicker.Data;
+            return subSymbolTicker;*/
+            return null;
+        }
+
+        static async Task BittrexUnsubscribe(BittrexSocketClient sock, UpdateSubscription subscription)
+        {
+            await sock.Unsubscribe(subscription);
+        }
+
+        static async Task BittrexWriteSymbolsCsv(BittrexClient exch)
+        {
+            string exchName = "BITTREX";
+            var resSymbols = await exch.GetSymbolsAsync();
+            var symbols = resSymbols.Data;
+            Console.WriteLine($"[{exchName}]   {symbols.Count()} symbols");
+            WriteObjectsToCsv(symbols, SymbolFilepath(exchName));
+        }
+        #endregion ======================================================================
+
+        #region ========== BITFINEX METHODS ==============================================
+        static async Task DemoBitfinexSimple(BitfinexClient exch)
+        {
+            var exchName = "BITFINEX";
+            var resSymbols = await exch.GetSymbolsAsync();
+            var symbols = resSymbols.Data;
+            Console.WriteLine($"[{exchName}]   {symbols.Count()} symbols");
+        }
+
+        static async Task DemoBitfinexSymbolTickerUpdates(BitfinexSocketClient sock, int sleepSeconds = 20)
+        {
+            Console.WriteLine($"--- Running BINANCE SymbolTickerUpdates thread for {sleepSeconds} seconds ---");
+            var subscription = BitfinexSubscribe(sock);
+            Thread.Sleep(sleepSeconds * 1000);
+            await BitfinexUnsubscribe(sock, subscription);
+        }
+
+        static UpdateSubscription BitfinexSubscribe(BitfinexSocketClient sock)
+        {
+            string exchName = "BITFINEX";
+
+            /*var crSubSymbolTicker = sock.Spot.SubscribeToAllSymbolTickerUpdates((binanceTick) =>
+            {
+                Console.WriteLine($"[{exchName}]   {binanceTick.Count()} symbol ticker updates received");
+                var tick = binanceTick.First();
+                Console.WriteLine($"[{exchName} {tick.Symbol}]   {tick.BidQuantity}x{tick.BidPrice}  {tick.AskPrice}x{tick.AskQuantity}   (example 1st update)");
+            });
+
+            var subSymbolTicker = crSubSymbolTicker.Data;
+            return subSymbolTicker;*/
+            return null;
+        }
+
+        static async Task BitfinexUnsubscribe(BitfinexSocketClient sock, UpdateSubscription subscription)
+        {
+            await sock.Unsubscribe(subscription);
+        }
+
+        static async Task BitfinexWriteSymbolsCsv(BitfinexClient exch)
+        {
+            string exchName = "BITFINEX";
+            var resSymbols = await exch.GetSymbolsAsync();
+            var symbols = resSymbols.Data;
+            WriteStringsToCsv(symbols, SymbolFilepath(exchName), "Symbol");
+        }
+        #endregion ======================================================================
+
+
+        static async Task DemoExchanges(int sleepSeconds = 2)
+        {
+            Console.WriteLine($"\n--- Running Exchange Demos in {sleepSeconds} second(s) ---");
+            Thread.Sleep(sleepSeconds * 1000);
+
+            // BINANCE exchange
+            CreateBinanceExchange(out BinanceClient exchBinance, out BinanceSocketClient sockBinance);
+            await DemoBinanceSimple(exchBinance);
+            //await DemoBinanceSymbolTickerUpdates(sockBinance);
+
+            // BITTREX exchange
+            CreateBittrexExchange(out BittrexClient exchBittrex, out BittrexSocketClient sockBittrex);
+            await DemoBittrexSimple(exchBittrex);
+            //await DemoBittrexSymbolTickerUpdates(sockBittrex);
+
+            // BITFINEX exchange
+            CreateBitfinexExchange(out BitfinexClient exchBitfinex, out BitfinexSocketClient sockBitfinex);
+            await DemoBitfinexSimple(exchBitfinex);
+            //await DemoBitfinexSymbolTickerUpdates(sockBitfinex);
+
+            return;
+        }
+
+
+        #region ========== KAFKA ========================================================
+        static async Task DemoKafka(int sleepSeconds = 2)
+        {
+            Console.WriteLine($"\n--- Running Kafka Demos in {sleepSeconds} second(s) ---");
+            Thread.Sleep(sleepSeconds * 1000);
+
+            // Kafka configuration strings
+            string bootstrapServers = "localhost:9092";
+            string topic = "crypto-marketdata-symbols";
+            string groupId = "marketdata-consumer-group";
+
+            await DemoKafkaProducer(bootstrapServers, topic, payload: "This is a sample payload.");
+            await DemoKafkaConsumer(groupId, bootstrapServers, topic);
+
+            return;
+        }
+
+        // where bootstrapServers like "localhost:9092" (CSV list if more than one server)
+        // where topic like "crypto-marketdata-symbols"
+        // where msg like "This is a sample payload."
+        static async Task DemoKafkaProducer(string bootstrapServers, string topic, string payload)
+        {
+            var config = new ProducerConfig { BootstrapServers = bootstrapServers };
+
+            // If serializers are not specified, default serializers from
+            // `Confluent.Kafka.Serializers` will be automatically used where
+            // available. Note: by default strings are encoded as UTF8.
+            using (var p = new ProducerBuilder<Null, string>(config).Build())
+            {
+                try
+                {
+                    var dr = await p.ProduceAsync(topic, new Message<Null, string> { Value = payload });
+                    Console.WriteLine($"Delivered '{dr.Value}' to '{dr.TopicPartitionOffset}'");
+                }
+                catch (ProduceException<Null, string> e)
+                {
+                    Console.WriteLine($"Delivery failed: {e.Error.Reason}");
+                }
+            }
+            Console.WriteLine();
+
+            // Note that a server round-trip is slow (3ms at a minimum; actual latency depends
+            // on many factors). In highly concurrent scenarios you will achieve high overall
+            // throughput out of the producer using the above approach, but there will be a delay
+            // on each await call. In stream processing applications, where you would like to process
+            // many messages in rapid succession, you would typically use the Produce method instead:
+            var conf = new ProducerConfig { BootstrapServers = bootstrapServers };
+
+            Action<DeliveryReport<Null, string>> handler = r =>
+                Console.WriteLine(!r.Error.IsError
+                    ? $"Delivered message to {r.TopicPartitionOffset}"
+                    : $"Delivery Error: {r.Error.Reason}");
+
+            using (var p = new ProducerBuilder<Null, string>(conf).Build())
+            {
+                for (int i = 0; i < 10; ++i)
+                {
+                    p.Produce(topic, new Message<Null, string> { Value = i.ToString() }, handler);
+                }
+
+                // wait for up to 10 seconds for any inflight messages to be delivered.
+                p.Flush(TimeSpan.FromSeconds(10));
+            }
+            Console.WriteLine();
+        }
+
+        // where GroupId like "test-consumer-group"
+        // where bootstrapServers like "localhost:9092" (CSV list if more than one server)
+        // where topic like "crypto-marketdata-symbols"
+        static async Task DemoKafkaConsumer(string groupId, string bootstrapServers, string topic)
+        {
+            // Basic Consumer example
+            var conf = new ConsumerConfig
+            {
+                GroupId = groupId,
+                BootstrapServers = bootstrapServers,
+                // Note: The AutoOffsetReset property determines the start offset in the event
+                // there are not yet any committed offsets for the consumer group for the
+                // topic/partitions of interest. By default, offsets are committed
+                // automatically, so in this example, consumption will only start from the
+                // earliest message in the topic the first time you run the program.
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
+
+            using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
+            {
+                c.Subscribe(topic);
+
+                CancellationTokenSource cts = new CancellationTokenSource();
+                Console.CancelKeyPress += (_, e) => {
+                    e.Cancel = true; // prevent the process from terminating.
+                    cts.Cancel();
+                };
+
+                try
+                {
+                    while (true)
+                    {
+                        try
+                        {
+                            var cr = c.Consume(cts.Token);
+                            Console.WriteLine($"Consumed message '{cr.Message.Value}' at: '{cr.TopicPartitionOffset}'.");
+                        }
+                        catch (ConsumeException e)
+                        {
+                            Console.WriteLine($"Error occured: {e.Error.Reason}");
+                        }
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // Ensure the consumer leaves the group cleanly and final offsets are committed.
+                    c.Close();
+                }
+                Console.WriteLine();
+            }
+        }
+        #endregion ======================================================================
+
+
 
         static void ExecuteEncrypt(string[] args)
         {
@@ -503,5 +836,154 @@ namespace CryptoConsole
         }
 
 
+        //=========================== CODE GRAVEYARD ==========================
+
+        //CryptoTools.Cryptography.Cryptography.EncryptFile("X:/Users/Trader/Documents/hat_apis.json", "/Users/michael/Documents/hat_apis.enc", pw);    // encrypt api key file
+        //var api = m_factory.Get("HITBTC") as CryptoApis.Exchange.HitBtc.HitBtcRestApi;
+
+        /*//var symbols = api.GetSymbols();
+        m_factory = new ApiFactory(m_credentialsFile, m_pw);*/
+
+        //string password = "12345678";
+        //var apiXS = new ExchangeSharpRestApi("/Users/michael/Documents/hat_apis.csv.enc", password);
+
+
+        //DisplayBinanceTotals();
+        //BinanceSellAllCurrency(1.0M);
+
+        /*//var api = m_factory.Get("HITBTC") as CryptoRestApis.Exchange.HitBtc.HitBtcRestApi;
+        //var symbols = api.GetSymbols();
+
+        //symbols.ForEach(s => Console.WriteLine(s));
+        var t1 = api.GetOneTicker("DASHBTC");
+        Console.WriteLine(t1);
+        var c1 = api.GetCandles("DASHBTC");
+        c1.ForEach(cc => Console.WriteLine(cc));*/
+
+        /*Console.Write("\n\nPress any key to exit... ");
+        Console.ReadKey();
+        return;
+
+        string pathname = Path.Combine(GetExeDirectory(), "data.hitbtc_tickers.txt");
+        bool writeHeaders = !File.Exists(pathname);
+        var writer = new StreamWriter(pathname, true);
+        if (writeHeaders)
+        {
+            writer.WriteLine(HitBtcTicker.CsvHeaders);
+            writer.Flush();
+        }
+
+        while (true)
+        {
+            var tickers = api.GetAllTickers();
+            if (m_hitTickers == null)           // first time through, create the dictionary to store HitBtc data
+            {
+                m_hitTickers = new Dictionary<string, List<HitBtcTicker>>();
+                foreach (var t in tickers)
+                {
+                    m_hitTickers[t.symbol] = new List<HitBtcTicker>();
+                    m_hitTickers[t.symbol].Add(t);
+                }
+            }
+            else
+            {
+                Console.WriteLine(new string('=', 120));
+                int count = 0;
+                foreach (var t in tickers)
+                {
+                    if (!m_hitTickers.ContainsKey(t.symbol))                // if we have not yet stored this symbol...
+                    {
+                        m_hitTickers[t.symbol] = new List<HitBtcTicker>();  // create a new list for this symbol's tickers
+                        m_hitTickers[t.symbol].Add(t);
+                    }
+                    else
+                    {
+                        var last = m_hitTickers[t.symbol].Last();           // check the last ticker we added to the list for this symbol
+                        if (true)   //last.timestamp != t.timestamp)                  // only add to our stored tickers if the "last_updated" field has changed
+                        {
+                            m_hitTickers[t.symbol].Add(t);
+                            //Console.WriteLine(t);
+                            writer.WriteLine(t.ToCsv());
+                            writer.Flush();
+                            count++;
+                        }                            
+                    }
+                }
+                Console.WriteLine("{0} ({1} updates)", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), count);
+            }
+            Thread.Sleep(20000);                // sleep for 20 seconds
+        }
+
+
+        //BinanceTotals();
+        //var mgr = new CryptoTools.SymbolManager();
+        //SellBinance(0.50M, "bnb");
+
+
+        Console.Write("\n\nPress any key to exit... ");
+        Console.ReadKey();
+        return;
+        
+            // Send a sample message via Kafka
+            var sendMessage = new Thread(() => {
+                KafkaNet.Protocol.Message msg = new KafkaNet.Protocol.Message(payload);
+                var options = new KafkaOptions(kafkaUri);
+                var router = new BrokerRouter(options);
+                var client = new Producer(router);
+                client.SendMessageAsync(topic, new List<KafkaNet.Protocol.Message> { msg }).Wait();
+            });
+            sendMessage.Start();
+            // Get all the Kafka messages
+            var options = new KafkaOptions(kafkaUri);    
+            var brokerRouter = new BrokerRouter(options);    
+            var consumer = new Consumer(new ConsumerOptions(topicName, brokerRouter));    
+            foreach (var msg in consumer.Consume())    
+              {    
+                  Console.WriteLine(Encoding.UTF8.GetString(msg.Value));    
+               }    
+            Console.ReadLine();
+
+        */
+
     } // end of class Program
+
+
+    public class SymbolTickerStream
+    {
+        public string e { get; set; }   // Event type (i.e. "24hrTicker")
+        public long E { get; set; }     // Event time
+        public string s { get; set; }   // Symbol
+        public decimal p { get; set; }  // Price change
+        public decimal P { get; set; }  // Price change percent
+        public decimal w { get; set; }  // Weighted average price
+        public decimal x { get; set; }  // First trade(F)-1 price (first trade before the 24hr rolling window)
+        public decimal c { get; set; }  // Last price
+        public decimal Q { get; set; }  // Last quantity
+        public decimal b { get; set; }  // Best bid price
+        public decimal B { get; set; }  // Best bid quantity
+        public decimal a { get; set; }  // Best ask price
+        public decimal A { get; set; }  // Best ask quantity
+        public decimal o { get; set; }  // Open price
+        public decimal h { get; set; }  // High price
+        public decimal l { get; set; }  // Low price
+        public decimal v { get; set; }  // Total traded base asset volume
+        public decimal q { get; set; }  // Total traded quote asset volume
+        public long O { get; set; }     // Statistics open time
+        public long C { get; set; }     // Statistics close time
+        public long F { get; set; }     // First trade ID
+        public long L { get; set; }     // Last trade ID
+        public int n { get; set; }      // Total number of trades
+    }
+
+    public class SymbolBookTickerStream
+    {
+        public long u { get; set; }     // order book updateId
+        public string s { get; set; }   // symbol
+        public decimal b { get; set; }  // best bid price
+        public decimal B { get; set; }  // best bid qty
+        public decimal a { get; set; }  // best ask price
+        public decimal A { get; set; }  // best ask qty
+    }
+
+
 } // end of namespace
