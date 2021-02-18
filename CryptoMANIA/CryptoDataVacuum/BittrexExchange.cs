@@ -23,7 +23,8 @@ namespace CryptoDataVacuum
 
         KafkaProducer _p;
 
-        public BittrexExchange(KafkaProducer p)
+        //public BittrexExchange(KafkaProducer p)
+        public BittrexExchange(string bootstrapServers, string topic)
         {
             var evKeys = Environment.GetEnvironmentVariable(ApiKeyEnvVar, EnvironmentVariableTarget.User);
             var keys = evKeys.Split('|');
@@ -36,7 +37,8 @@ namespace CryptoDataVacuum
             socketOptions.ApiCredentials = clientOptions.ApiCredentials;
             this.sock = new BittrexSocketClient(socketOptions);
 
-            _p = p;
+            //_p = p;
+            _p = new KafkaProducer(bootstrapServers, topic);
         }
 
 

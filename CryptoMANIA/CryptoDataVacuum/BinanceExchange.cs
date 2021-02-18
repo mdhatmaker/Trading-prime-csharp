@@ -24,7 +24,8 @@ namespace CryptoDataVacuum
 
         KafkaProducer _p;
 
-        public BinanceExchange(KafkaProducer p)
+        //public BinanceExchange(KafkaProducer p)
+        public BinanceExchange(string bootstrapServers, string topic)
         {
             var evKeys = Environment.GetEnvironmentVariable(ApiKeyEnvVar, EnvironmentVariableTarget.User);
             var keys = evKeys.Split('|');
@@ -37,7 +38,8 @@ namespace CryptoDataVacuum
             socketOptions.ApiCredentials = clientOptions.ApiCredentials;
             this.sock = new BinanceSocketClient(socketOptions);
 
-            _p = p;
+            //_p = p;
+            _p = new KafkaProducer(bootstrapServers, topic);
         }
         
 

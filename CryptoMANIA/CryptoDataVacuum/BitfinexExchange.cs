@@ -23,7 +23,8 @@ namespace CryptoDataVacuum
 
         KafkaProducer _p;
 
-        public BitfinexExchange(KafkaProducer p)
+        //public BitfinexExchange(KafkaProducer p)
+        public BitfinexExchange(string bootstrapServers, string topic)
         {
             var evKeys = Environment.GetEnvironmentVariable(ApiKeyEnvVar, EnvironmentVariableTarget.User);
             var keys = evKeys.Split('|');
@@ -36,7 +37,8 @@ namespace CryptoDataVacuum
             socketOptions.ApiCredentials = clientOptions.ApiCredentials;
             this.sock = new BitfinexSocketClient(socketOptions);
 
-            _p = p;
+            //_p = p;
+            _p = new KafkaProducer(bootstrapServers, topic);
         }
 
 
@@ -51,8 +53,8 @@ namespace CryptoDataVacuum
         {
             Console.WriteLine($"  --- Starting {ExchName} SymbolTickerUpdates thread ---");
             var resSymbols = exch.GetSymbols();
-            var symbols = resSymbols.Data.Take(15);  // TODO: *** FOR TESTING ONLY ***
-            //var symbols = resSymbols.Data;
+            //var symbols = resSymbols.Data.Take(50);  // TODO: *** FOR TESTING ONLY ***
+            var symbols = resSymbols.Data;
             int count = symbols.Count();
             int i = 0;
             foreach (var s in symbols)
@@ -62,19 +64,31 @@ namespace CryptoDataVacuum
             }
         }
 
+        private void ProduceToKafka(BitfinexStreamSymbolOverview tick, string symbol)
+        {
+            //Console.WriteLine($"[{ExchName}]   1 symbol ticker updates received");
+            int quoteVolume = 0;
+            DateTime dt = DateTime.Now.ToUniversalTime();
+            //Console.WriteLine($"{dt:G} [{ExchName} {symbol}]  {tick.LastPrice} ({tick.Volume}/{quoteVolume})    B {tick.BidSize} : {tick.Bid}  x  {tick.Ask} : {tick.AskSize} A");
+            string msg = string.Format($"{dt:G},{ExchName},{symbol},{tick.LastPrice},{tick.Volume},{quoteVolume},{tick.BidSize},{tick.Bid},{tick.Ask},{tick.AskSize}");
+            //Console.WriteLine(msg);
+            _p.Produce(msg);
+        }
+
         public async Task SubscribeSymbolTickerUpdates(string rawSymbol, int i = -1, int count = -1)
         {
             string symbol = "t" + rawSymbol.ToUpper();
-            Console.WriteLine($"  --- Subscribing to [{ExchName} {symbol}]    ( {i} / {count} ) ---");
+            //Console.WriteLine($"  --- Subscribing to [{ExchName} {symbol}]    ( {i} / {count} ) ---");
             var crSubSymbolTicker = await sock.SubscribeToTickerUpdatesAsync(symbol, (tick) =>
             {
-                //Console.WriteLine($"[{ExchName}]   1 symbol ticker updates received");
+                Task.Factory.StartNew(() => ProduceToKafka(tick, symbol));
+                /*//Console.WriteLine($"[{ExchName}]   1 symbol ticker updates received");
                 int quoteVolume = 0;
                 DateTime dt = DateTime.Now.ToUniversalTime();
                 //Console.WriteLine($"{dt:G} [{ExchName} {symbol}]  {tick.LastPrice} ({tick.Volume}/{quoteVolume})    B {tick.BidSize} : {tick.Bid}  x  {tick.Ask} : {tick.AskSize} A");
                 string msg = string.Format($"{dt:G},{ExchName},{symbol},{tick.LastPrice},{tick.Volume},{quoteVolume},{tick.BidSize},{tick.Bid},{tick.Ask},{tick.AskSize}");
                 //Console.WriteLine(msg);
-                _p.Produce(msg);
+                _p.Produce(msg);*/
             });
 
             this.subscription = crSubSymbolTicker.Data;

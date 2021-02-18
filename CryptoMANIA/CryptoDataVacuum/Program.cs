@@ -97,7 +97,7 @@ namespace CryptoDataVacuum
             string topic = "crypto-marketdata-symbols";
             string groupId = "marketdata-consumer-group";
 
-            var kafkaProducer = new KafkaProducer(bootstrapServers, topic);
+            //var kafkaProducer = new KafkaProducer(bootstrapServers, topic);
             
             var kafkaConsumer = new KafkaConsumer(bootstrapServers, topic, groupId);
             var consumerTask = Task.Factory.StartNew(() => kafkaConsumer.Start());
@@ -107,31 +107,35 @@ namespace CryptoDataVacuum
             Thread.Sleep(sleepSeconds * 1000);
 
             // BINANCE exchange
-            ICryptoDataVacuum binance = new BinanceExchange(kafkaProducer);
+            //ICryptoDataVacuum binance = new BinanceExchange(kafkaProducer);
+            ICryptoDataVacuum binance = new BinanceExchange(bootstrapServers, topic);
             await binance.DisplaySymbolCount();
-            //await binance.DemoSymbolTickerUpdates();
 
             // BITTREX exchange
-            ICryptoDataVacuum bittrex = new BittrexExchange(kafkaProducer);
+            //ICryptoDataVacuum bittrex = new BittrexExchange(kafkaProducer);
+            ICryptoDataVacuum bittrex = new BittrexExchange(bootstrapServers, topic);
             await bittrex.DisplaySymbolCount();
-            //await bittrex.DemoSymbolTickerUpdates();
 
             // BITFINEX exchange
-            ICryptoDataVacuum bitfinex = new BitfinexExchange(kafkaProducer);
+            //ICryptoDataVacuum bitfinex = new BitfinexExchange(kafkaProducer);
+            ICryptoDataVacuum bitfinex = new BitfinexExchange(bootstrapServers, topic);
             await bitfinex.DisplaySymbolCount();
-            //await bitfinex.DemoSymbolTickerUpdates();
 
-            await bitfinex.SubscribeAllTickerUpdates();
-            await bittrex.SubscribeAllTickerUpdates();
+            // subscribe to updates
             await binance.SubscribeAllTickerUpdates();
+            await bittrex.SubscribeAllTickerUpdates();
+            await bitfinex.SubscribeAllTickerUpdates();
 
+            // wait a while...
             int runSeconds = 600;
             Thread.Sleep(runSeconds * 1000);
+
+            // unsubscribe from updates
             await binance.UnsubscribeAllUpdates();
             await bittrex.UnsubscribeAllUpdates();
             await bitfinex.UnsubscribeAllUpdates();
 
-            kafkaProducer.Shutdown();
+            //kafkaProducer.Shutdown();
             // TODO: shutdown consumer task?
 
             return;

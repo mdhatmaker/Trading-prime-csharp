@@ -55,7 +55,17 @@ namespace CryptoDataVacuum
                     try
                     {
                         var cr = _c.Consume(cts.Token);
-                        Console.WriteLine($"Consumed message '{cr.Message.Value}' at: '{cr.TopicPartitionOffset}'.");
+                        var msg = cr.Message.Value;
+                        var values = msg.Split(',');
+                        if (values[1] == "BINANCE")
+                            Console.Write("B");
+                        else if (values[1] == "BITFINEX")
+                            Console.Write("F");
+                        else if (values[1] == "BITTREX")
+                            Console.Write("t");
+                        else
+                            Console.WriteLine($"\nUnknown Exchange: {values[1]}");
+                        //Console.WriteLine($"Consumed message '{msg}' at: '{cr.TopicPartitionOffset}'.");
                     }
                     catch (ConsumeException e)
                     {
