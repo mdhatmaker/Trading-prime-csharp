@@ -7,6 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="PureSocketCluster" Version="2.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 </Project>
